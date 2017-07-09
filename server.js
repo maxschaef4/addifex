@@ -25,13 +25,19 @@ app.use(function(req, res, next){
 
 //Home page
 app.get('/', function(req, res){
-    res.render('index');
+    res.render('index', {scooby : scooby.getScooby()});
 });
 
 //About Page
 app.get('/about', function(req, res){
-    res.render('about', {scooby : scooby.getScooby()});
+    res.render('about', {
+        pageTestScript : '/qa/tests-about.js'
+    });
 });
+
+app.get('/product', function(req, res){
+    res.render('product');
+})
 
 //404 page
 app.use(function(req, res){
