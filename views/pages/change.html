@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" type="image/png" href="../images/simple_logo_v1.png"/>
+        <link rel="stylesheet" href="../styles/signup_style.css" type="text/css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Update Account</title>
+    </head>
+    <body class="col-12">
+        <header class="col-12">
+            <a href="index.html">
+                <img src="../images/logo_v1.png" class="col-2" alt="Logo">
+            </a>
+        </header>
+        <article class="col-12">
+            <form id="update" class="col-12" method="post">
+                <center><h2>Change Password</h2></center>
+                <div class="field_container col-12">
+                    <h4>Old Password</h4>
+                    <p id="oldError" class="error"></p>
+                    <input id="old" name="old" class="text_field col-12" type="password" size="50"/>
+                </div>
+                <div class="field_container col-12">
+                    <h4>New Password</h4>
+                    <div id="requirments" class="passwordReqs_container col-12">
+                        <p id="length" class="passwordReq col">8 Characters Long</p>
+                        <p id="uppercase" class="passwordReq col">1 Uppercase Character</p>
+                        <p id="number" class="passwordReq col">1 Number</p>
+                    </div>
+                    <p id="newError" class="error"></p>
+                    <input id="new" name="new" class="text_field col-12" type="password" size="50"/>
+                </div>
+                <div class="field_container col-12">
+                    <h4>Confirm New Password</h4>
+                    <p id="confirmError" class="error"></p>
+                    <input id="confirm" name="password" class="text_field col-12" type="password" size="50"/>
+                </div>
+                <div class="button_container col-12">
+                    <button class="blue col-12" id="signup">Update</button>
+                </div>
+            </form>
+        </article>
+    </body>
+    <!--Scripts go at the bottom so the page can load the elements for the eventListeners to attach themselves to-->
+    <script src="../scripts/update_controller.js"></script>
+</html>

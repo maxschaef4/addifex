@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" type="image/png" href="../images/simple_logo_v1.png"/>
+        <link rel="stylesheet" href="../styles/updateInfo_style.css" type="text/css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Update Account</title>
+    </head>
+    <body class="col-12">
+        <header class="col-12">
+            <a href="index.html">
+                <img src="../images/logo_v1.png" class="col-2" alt="Logo">
+            </a>
+        </header>
+        <article class="col-12">
+            <form id="update" class="col-12" method="post">
+                <center><h2>Update Account</h2></center>
+                <div class="field_container col-12">
+                    <h4>Full Name</h4>
+                    <p id="nameError" class="error"></p>
+                    <input id="name" name="name" class="text_field col-12" type="text" size="50"/>
+                </div>
+                <div class="field_container col-12">
+                    <h4>Email</h4>
+                    <p id="emailError" class="error"></p>
+                    <input id="email" name="email" class="text_field col-12" type="text" size="50"/>
+                </div>
+                <div class="field_container col-12">
+                    <h4>Address</h4>
+                    <p id="addressError" class="error"></p>
+                    <input id="address" name="address" class="text_field col-12" type="text" size="50"/>
+                </div>
+                <div class="field_container col-12">
+                    <h4>City</h4>
+                    <p id="cityError" class="error"></p>
+                    <input id="city" name="city" class="text_field col-12" type="text" size="50"/>
+                </div>
+                <div class="field_container col-12">
+                    <h4>State</h4>
+                    <p id="stateError" class="error"></p>
+                    <select id="state" name="state" class="col-3">
+                        <option>Alabama</option>
+                    </select>
+                </div>
+                <div class="field_container col-12">
+                    <h4>Zipcode</h4>
+                    <p id="zipcodeError" class="error"></p>
+                    <input id="zipcode" name="zipcode" class="text_field col-12" type="text" size="50"/>
+                </div>
+                <div class="button_container col-12">
+                    <button class="blue col-12" id="signup">Update</button>
+                </div>
+            </form>
+        </article>
+    </body>
+    <!--Scripts go at the bottom so the page can load the elements for the eventListeners to attach themselves to-->
+    <script src="../scripts/update_controller.js"></script>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" type="image/png" href="../images/simple_logo_v1.png"/>
+        <link rel="stylesheet" href="../styles/creatorProducts-new_style.css" type="text/css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Products | New Product</title>
+    </head>
+    <body class="col-12">
+        <header class="col-12">
+            <img src="../images/logo_v1.png" class="col-2" alt="Logo"/>
+        </header>
+        <article class="col-12">
+            <div class="content_container col-12">
+                <div class="sideButtons_container col-3">
+                    <ul>
+                        <a href="creatorProducts.html">
+                            <li class="side_button col-12">Back to Products</li>
+                        </a>
+                    </ul>
+                </div>
+                <form class="rightSection_container col-9">
+                    <center><h3>New Product</h3></center>
+                    <div class="field_container col-12">
+                        <h4>Product Name</h4>
+                        <p>*</p>
+                        <p id="productNameError" class="error"></p>
+                        <input id="productName" name="productName" class="text_field col-12" type="text"/>
+                    </div>
+                    <div class="field_container col-12">
+                        <h4>Price</h4>
+                        <p>*</p>
+                        <p id="priceError" class="error"></p>
+                        <input id="price" name="price" class="text_field col-12" type="number"/>
+                    </div>
+                    <div class="field_container col-12">
+                        <h4>Shipping Cost</h4>
+                        <p>*</p>
+                        <p id="shippingError" class="error"></p>
+                        <input id="shipping" name="shipping" class="text_field col-12" type="number"/>
+                    </div>
+                    <div class="field_container col-12">
+                        <h4>Build Time</h4>
+                        <p>*</p>
+                        <p id="timeError" class="error"></p>
+                        <input id="time" name="time" class="text_field col-9" type="number"/>
+                        <select id="timeScale" name="timeScale" class="col-3">
+                            <option>Select Unit</option>
+                            <option>Hour(s)</option>
+                            <option>Day(s)</option>
+                            <option>Week(s)</option>
+                        </select>
+                        <div class="radio_container col-12">
+                            <input id="noTime" type="radio">
+                            <label for="noTime">No Build Time</label>
+                        </div>
+                    </div>
+                    <div class="field_container col-12">
+                        <h4>Images</h4>
+                        <p>*Add up to 12 images. First image is the products featured image.</p>
+                        <p id="productImageError" class="error"></p>
+                        <input id="productImage" name="productImage" class="file_input" type="file"/>
+                        <label for="productImage" id="imageLabel" class="col-3">Choose a file...</label>
+                        <p>Delete Last</p>
+                        <div class="images_container col-12">
+                            <img src="../images/battery.jpg" class="productImage col-1"/>
+                            <img src="../images/battery.jpg" class="productImage col-1"/>
+                            <img src="../images/battery.jpg" class="productImage col-1"/>
+                            <img src="../images/battery.jpg" class="productImage col-1"/>
+                            <img src="../images/battery.jpg" class="productImage col-1"/>
+                            <img src="../images/battery.jpg" class="productImage col-1"/>
+                            <img src="../images/battery.jpg" class="productImage col-1"/>
+                            <img src="../images/battery.jpg" class="productImage col-1"/>
+                            <img src="../images/battery.jpg" class="productImage col-1"/>
+                            <img src="../images/battery.jpg" class="productImage col-1"/>
+                            <img src="../images/battery.jpg" class="productImage col-1"/>
+                            <img src="../images/battery.jpg" class="productImage col-1"/>
+                        </div>
+                    </div>
+                    <div class="field_container col-12">
+                        <h4>Description</h4>
+                        <p>*</p>
+                        <p id="description" class="error"></p>
+                        <textarea class="col-12"></textarea>
+                    </div>
+                    <div class="field_container col-12">
+                        <h4>Options</h4>
+                        <p>*</p>
+                        <p id="optionsError" class="error"></p>
+                        <div class="optionList_container col-12">
+                            <div class="option_container col-4">
+                                <div class="check_container col">
+                                    <input type="checkbox" id="colorsCheck"/>
+                                    <label for="colorsCheck">Colors</label>
+                                </div>
+                                <hr>
+                            </div>
+                            <div class="option_container col-4">
+                                <div class="check_container col">
+                                    <input type="checkbox" id="sizesCheck"/>
+                                    <label for="sizesCheck">Sizes</label>
+                                </div>
+                                <hr>
+                                <div id="addOptionContainer" class="addOption_container">
+                                    <input id="sizeInput" class="text_field col-12"/>
+                                    <div class="addOptionButton_container">
+                                        <button class="red col-12">+</button>
+                                    </div>
+                                    <div id=""></div>
+                                </div>
+                            </div>
+                            <div class="option_container col-4">
+                                <div class="check_container col">
+                                    <input id="otherCheck" type="checkbox"/>
+                                    <label for="otherCheck">Other</label>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="field_container col-12">
+                        <h4>Category</h4>
+                        <p>*</p>
+                        <p id="categoryError" class="error"></p>
+                        <select id="category" name="category" class="col-4">
+                            <option>Select Category</option>
+                        </select>
+                    </div>
+                    <div class="field_container col-12">
+                        <h4>Keywords</h4>
+                        <p>*</p>
+                        <p id="keywordsError" class="error"></p>
+                        <input id="keywords" name="keywords" class="text_field col-4" type="text"/>
+                        <button id="keywordButton" class="red col-2">+</button>
+                    </div>
+                    <div class="button_container col-12">
+                        <button class="red col-12">Upload</button>
+                    </div>
+                </form>
+            </div>
+            <footer class="col-12">
+                <p class="col-12">Copyright &copy 2017 Addifex, L.L.C. All Rights Reserved</p>
+            </footer>
+        </article>
+    </body>
+    <script src="../scripts/creatorProducts-new_controller.js"></script>
+</html>

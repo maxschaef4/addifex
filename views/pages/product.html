@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" type="image/png" href="../images/simple_logo_v1.png"/>
+        <link rel="stylesheet" href="../styles/product_style.css" type="text/css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Account</title>
+    </head>
+    <body class="col-12">
+        <header class="col-12">
+            <a href="index.html">
+                <img src="../images/logo_v1.png" class="col-2" alt="Logo"/>
+            </a>
+            <form class="search_form col-8" action="" method="post">
+                <select id="category" class="col-2">
+                    <option>All</option>
+                </select>
+                <input id="input" name="input" class="col-8" type="text" placeholder="Search" maxlength="100"/>
+                <button type="submit" id="search" class="red col-2"></button>
+            </form>
+            <div class="headerButton_container col-1">
+                <a href="cart.html">
+                    <button class="cart_button green col-12"></button>
+                </a>
+            </div>
+            <div class="headerButton_container col-1">
+                <a href="account.html">
+                    <button class="account_button blue col-12"></button>
+                </a>
+            </div>
+        </header>
+        <article class="col-12">
+            <div class="content_container col-12">
+                <div class="productInfo_container col-9">
+                    <img class="product_image col-7" src="../images/battery.jpg"/>
+                    <div class="product_info col-5">
+                        <ul class="product_info">
+                            <li class="info" id="name">Power Cell Battery</li>
+                            <li class="info" id="creator">Creator: <a href="shop.html" class="creator_link">leCreator</a></li>
+                            <div class="pricing_group">
+                                <li class="info" id="price">Price: <strong>$249.59</strong></li>
+                                <li class="info" id="shipping">Shipping: <strong>$8.01</strong></li>
+                            </div>
+                        </ul>
+                        <!--Blurbs will go in at a later date-->
+                        <!--<ul class="product_blurb">
+                            <li class="blurb">Information 1</li>
+                            <li class="blurb">Information 2</li>
+                            <li class="blurb">Information 3</li>
+                            <li class="blurb">Information 4</li>
+                        </ul>-->
+                    </div>
+                    <div class="product_desc col-12">
+                        <!--Description is maximum 2000 characters long-->
+                        <p class="description">
+                            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, met
+                        </p>
+                    </div>
+                    <!--The reviews section will go in at a later date-->
+                    <!--<div class="reviews_title col-12">
+                        <h2>Reviews</h2>
+                    </div>
+                    <div class="reviews_container col-12">
+                        <div class="review">
+                            <p class="review_info">Maxwell S. <span class="posted_text">Posted: January 1, 2017</span></p>
+                            <p class="review_conent">
+                                Lorem ipsum dolor sit amet, eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, met
+                            </p>
+                        </div>
+                        <div class="review">
+                            <p class="review_info">Jordan H. <span class="posted_text">Posted: January 1, 2017</span></p>
+                            <p class="review_conent">
+                                nean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, met
+                            </p>
+                        </div>
+                        <div class="review">
+                            <p class="review_info">Steve R. <span class="posted_text">Posted: January 1, 2017</span></p>
+                            <p class="review_conent">
+                                Lorem ipsum dolor sit amet, tum semper nisi. Aenean vulputate eleifend tellus. Aenean a ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, met
+                            </p>
+                        </div>
+                    </div>-->
+                </div>
+                <div class="right_aside col-3">
+                    <div class="rightButton_container col-12">
+                        <button id="likeButton" class="red col-12">Like</button>
+                    </div>
+                    <div class="rightButton_container col-12">
+                        <button id="buyButton" class="green col-12">Add to Cart</button>
+                    </div>
+                    <div class="rightButton_container col-12">
+                        <select class="product_select col-12">
+                            <option>Colors</option>
+                            <option>Red</option>
+                            <option>Green</option>
+                            <option>Blue</option>
+                        </select>
+                    </div>
+                    <div class="rightButton_container col-12">
+                        <select class="product_select col-12">
+                            <option>Sizes</option>
+                            <option>Small</option>
+                            <option>Medium</option>
+                            <option>Large</option>
+                        </select>
+                    </div>
+                    <div class="rightButton_container col-12">
+                        <select class="product_select col-12">
+                            <option>Other Options</option>
+                        </select>
+                    </div>
+                    <!--Reviews will go in at a later date-->
+                    <!--<div class="ratings_container col-12">
+                        <p><a class="ratings_link">16 Reviews</a></p>
+                    </div>-->
+                    <div class="shop_container col-12">
+                        <p class="more_from">More from leCreator</p>
+                        <img class="creator_image" src="../images/battery.jpg"/>
+                        <a href="shop.html">
+                            <button class="blue col-12">Visit Shop</button>
+                        </a>
+                    </div>
+                </div>
+                <footer class="col-12">
+                    <p class="col-6"><a href="about.html">About Us</a> | <a href="contact.html">Contact Us</a> | <a href="">Privacy Policy</a> | <a href="">Terms & Conditions</a></p>
+                    <p class="col-6">Copyright &copy 2017 Addifex, L.L.C. All Rights Reserved</p>
+                </footer>
+            </div>
+        </article>
+    </body>
+    <script src="../scripts/product_controller.js"></script>
+</html>

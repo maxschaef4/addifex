@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" type="image/png" href="../images/simple_logo_v1.png"/>
+        <link rel="stylesheet" href="../styles/signin_style.css" type="text/css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Sign In</title>
+    </head>
+    <body class="col-12">
+        <header class="col-12">
+            <a href="index.html">
+                <img src="../images/logo_v1.png" class="col-2" alt="Logo">
+            </a>
+        </header>
+        <article class="col-12">
+            <form id="welcome" class="welcome col-12" method="post">
+                <center><h2>Sign In</h2></center>
+                <div class="field_container col-12">
+                    <h4>Email</h4>
+                    <p id="emailError" class="error"></p>
+                    <input id="email" name="email" class="text_field col-12" type="text" size="50"/>
+                </div>
+                <div class="field_container col-12">
+                    <h4>Password</h4>
+                    <p id="passwordError" class="error"></p>
+                    <input id="password" name="password" class="text_field col-12" type="password" size="50"/>
+                    <a href="forgot.html">Forgot Password</a>
+                </div>
+                <div class="button_container col-12">
+                    <button class="green col-12" id="signup" disabled="true">Sign In</button>
+                </div>
+            </form>
+        </article>
+    </body>
+    <script src="../js/signin_controller.js"></script>
+</html>

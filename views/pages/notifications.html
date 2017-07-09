@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="icon" type="image/png" href="../images/simple_logo_v1.png"/>
+        <link rel="stylesheet" href="../styles/notifications_style.css" type="text/css"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Notifications</title>
+    </head>
+    <body class="col-12">
+        <header class="col-12">
+            <a href="index.html">
+                <img src="../images/logo_v1.png" class="col-2" alt="Logo"/>
+            </a>
+            <form class="search_form col-8" action="" method="post">
+                <select id="category" class="col-2">
+                    <option>All</option>
+                </select>
+                <input id="input" name="input" class="col-8" type="text" placeholder="Search" maxlength="100"/>
+                <button type="submit" id="search" class="red col-2"></button>
+            </form>
+            <div class="headerButton_container col-1">
+                <a href="cart.html">
+                    <button class="cart_button green col-12"></button>
+                </a>
+            </div>
+            <div class="headerButton_container col-1">
+                <a href="account.html">
+                    <button class="account_button blue col-12"></button>
+                </a>
+            </div>
+        </header>
+        <article class="col-12">
+            <div class="content_container col-12">
+                <h2>New Notifictions</h2>
+                    <div class="notification_container col-12">
+                        <div class="new notification col-12">
+                            <div class="message_container col-12">
+                                <h4 id="subject">Subject: Welcome to Addifex.com</h4>
+                                <p id="message">
+                                    Thank you for creating an account on Addifex! Please note that we are still developing the marketplace features and you will not be able to buy or sell any products yet. Keep checking back and we will have the marketplace running soon. In the mean time, tell your friends and family about us and check us out on social media.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                <hr>
+            <footer class="col-12">
+                    <p class="col-6"><a href="about.html">About Us</a> | <a href="contact.html">Contact Us</a> | <a href="">Privacy Policy</a> | <a href="">Terms & Conditions</a></p>
+                    <p class="col-6">Copyright &copy 2017 Addifex, L.L.C. All Rights Reserved</p>
+                </footer>
+            </div>
+        </article>
+    </body>
+    <script src="../scripts/notifications_controller.js"></script>
+</html>
