@@ -4,6 +4,8 @@
 //Variables for importing modules
 var express = require('express');
 var handlebars = require('express-handlebars').create({defaultLayout : 'main'});
+//Custom modules
+var scooby = require('./lib/scooby.js');
 
 var app = express();
 
@@ -22,7 +24,7 @@ app.get('/', function(req, res){
 
 //About Page
 app.get('/about', function(req, res){
-    res.render('about');
+    res.render('about', {scooby : scooby.getScooby()});
 })
 
 //404 page
