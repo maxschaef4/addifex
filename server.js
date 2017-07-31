@@ -29,6 +29,11 @@ app.use(function(req, res, next){
     next();
 });
 
+//For using cookies
+var credentials = require('./credentials.js');
+//Using cookie-parser middleware
+app.use(require('cookie-parser')(credentials.cookieSecret));
+
 //Using body-parser middleware
 app.use(require('body-parser').urlencoded({extended: true}));
 
@@ -73,6 +78,7 @@ app.use(function(req, res, next){
 
 //Home page
 app.get('/', function(req, res){
+    res.cookie('id', '123456789', {maxAge: 500000, signed: true, httpOnly: true});
     res.render('index', {scooby : scooby.getScooby(), name: 'Max',});
 });
 
@@ -99,7 +105,7 @@ app.get('/newsletter', function(req, res){
 app.post('/process', function(req, res){
     console.log('Form: ' + req.query.form);
     console.log('CSRF Token: ' + req.body._csrf);
-    console.log('Name: ' + req.pody.name);
+    console.log('Name: ' + req.body.name);
     console.log('Email: ' + req.body.email);
     res.redirect(303, '/thank-you');
 })
@@ -119,7 +125,15 @@ app.use(function(err, req, res, next){
     res.render('500');
 });
 
-//Starts the server at port 8081
-app.listen(app.get('port'), function(){
-    console.log('Express started on http://127.0.0.1:' + app.get('port'));
-});
+function startServer() {
+    //Starts the server at port 8081
+    app.listen(app.get('port'), function(){
+        console.log('Express started on http://127.0.0.1:' + app.get('port'));
+    });
+}
+
+if (require.main === module) {
+    startServer();
+}else{
+    module.exports = startServer;
+}
