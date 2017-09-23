@@ -1,5 +1,65 @@
+{{#section 'head'}}
+    <title>Addifex</title>
+    <link rel="stylesheet" href="styles/index_style.css"/>
+    <script src="scripts/test.js"></script>
+{{/section}}
+
 <h1>Welcome to Addifex, {{name}}!</h1>
 <h3>Scooby-Doo:</h3>
 <p>{{scooby}}</p>
+<div class="banner_container col-12">
+    <div class="news_section col-8">
+        <center>
+            <h2>Find the Coolest Products Created by Everyday Makers!</h2>
+            <p>Addifex is a marketplace for people to easily find awesome products coming out of the maker community. Our goal is to connect the world to the maker community's vast amounts of unique and one-off products. From electronics, to art, to furniture, to products that are in a category of their own: Addifex allows you to buy any kind of product dreamt up by the maker community!</p>
+        </center>
+    </div>
+    <div class="account_container col-4">
+        <div class="account_section col-12">
+            <h4>Cart</h4>
+            <p>Cart Contains: {{cart}} Items</p>
+            <div class="button_container col-12">
+                <a href="cart">
+                    <button class="green col-12">My Cart</button>
+                </a>
+            </div>
+            <h4>Account</h4>
+            <a href="notifications.html">You have <span>0</span> notifications</a>
+            <div class="button_container col-12">
+                <a href="account">
+                    <button class="blue col-12">My Account</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<form action="/" method="post" id="addNumForm">
+    <p>Enter Number:</p>
+    <input type="text" name="number"/>
+    <button type="submit" id="addNumSubmit">Add Number</button>
+</form>
+<a href="/productList">
+    <button>Product Listings</button>
+</a>
+<a href="/signup">
+    <button>Make Account!</button>
+</a>
+<a href="signin">
+    <button>Sign In</button>
+</a>
+<a href="/account">
+    <button>My Account</button>
+</a>
+<a href="/image-upload">
+    <button>Add Image</button>
+</a>
+{{#each users}}
+    <p>{{this._id}}, {{this.name}}, {{this.email}}, {{this.password}}</p>
+    <hr>
+{{/each}}
+<p>{{message}}</p>
+{{#each numbers}}
+    <p>{{this.number}}</p>
+{{/each}}
 {{> weather}}
 <a href="/about">About Us</a>

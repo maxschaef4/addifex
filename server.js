@@ -22,13 +22,6 @@ app.set('view cache', true);
 //Sets the port to 8081
 app.set('port', process.env.PORT || 8081);
 
-//Testing Example
-app.use(function(req, res, next){
-    res.locals.showTests = app.get('env') !== 'production' && req.query.test === '1';
-    
-    next();
-});
-
 //For using cookies
 var credentials = require('./credentials.js');
 //Using cookie-parser middleware
@@ -36,6 +29,49 @@ app.use(require('cookie-parser')(credentials.cookieSecret));
 
 //Using body-parser middleware
 app.use(require('body-parser').urlencoded({extended: true}));
+
+//For storing data to a file system
+var fs = require('fs');
+
+var dataDir = _dirname + '/data';
+var productPhotoDir = dataDir + '/product-photo';
+fs.exists(dataDir) || fs.mkdir(dataDir);
+fs.exists(productPhotoDir) || fs.mkdir(productPhotoDir);
+
+function savePhoto(productName, photoPath) {
+    
+}
+
+app.post('/products/product-photo/:id/:date', function(req, res){
+    var form = new formidible.IncomingForm();
+    
+    form.parse(req, function(err, fields, files){
+        if (err) {
+            res.session.flash = {
+                type: 'danger',
+                intro: 'Oops',
+                message: 'There was an error processing your submission',
+            };
+            
+            return res.redirect(303, '/products/product-photo');
+        }
+        
+        var photo = files.photo;
+        var dir = productPhotoDir + '/' + Date.now();
+        var path = dir + '/' + photo.name;
+        fs.mkdir(dir);
+        fs.rename(photo.path, dir + '/' + photo.name);
+        savePhoto(field.productName, path);
+        
+        req.session.flash = {
+            type: 'success',
+            intro: 'Good luck!',
+            message: 'You have been entered into the contest.',
+        };
+        
+        return res.redirect(303, '/products/product-photo');
+    })
+})
 
 //------Partials Here--------
 
@@ -125,6 +161,7 @@ app.use(function(err, req, res, next){
     res.render('500');
 });
 
+//Starts normal node server--disabled for mongodb testing
 function startServer() {
     //Starts the server at port 8081
     app.listen(app.get('port'), function(){

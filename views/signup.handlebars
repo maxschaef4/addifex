@@ -1,7 +1,16 @@
-<form action="/process" method="post">
-    <p>Full Name:</p>
-    <input type="text" name="fullname"/>
-    <p>Email:</p>
-    <input type="text" name="email"/>
-    <button type="submit">Sign Up</button>
+{{#section 'head'}}
+    <title>Addifex</title>
+    <link rel="stylesheet" href="styles/signup_style.css"/>
+    <script src="scripts/signup_controller.js"></script>
+{{/section}}
+
+<h2>Make Account!</h2>
+<form action="/signup" name="signup" method="post">
+    <p>Enter Name:</p>
+    <input type="text" name="name"/>
+    <p>Enter Email:</p>
+    <input type="text" name="newEmail"/>
+    <p>Enter Password:</p>
+    <input type="text" name="newPassword"/>
+    <button type="submit">Make Account</button>
 </form>

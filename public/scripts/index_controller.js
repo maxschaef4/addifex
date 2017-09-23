@@ -2,9 +2,11 @@
 //Some functions include: feed_container tab and border changing
 
 window.onload = function () {
+    //Used for switching between the featured, popular, and newest product sections of the home page
     var featuredButton = document.getElementById("featuredButton");
     var popularButton = document.getElementById("popularButton");
     var newestButton = document.getElementById("newestButton");
+    //Used for showing more products in the product section of the home page
     var moreButton = document.getElementById("moreButton");
     
     if (featuredButton.attachEvent) {

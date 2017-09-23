@@ -1,0 +1,14 @@
+{{#section 'head'}}
+    <title>Addifex</title>
+    <link rel="stylesheet" href="styles/signin_style.css"/>
+    <script src="scripts/test.js"></script>
+{{/section}}
+
+<form action="/signin" method="post">
+    <p>Email:</p>
+    <input type="text" name="email"/>
+    <p>Password:</p>
+    <input type="text" name="password"/>
+    <button type="submit">Sign In</button>
+</form>
+<p>{{status}}</p>

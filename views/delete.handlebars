@@ -1,0 +1,12 @@
+<h1>Delete shit</h1>
+<form method="post" action="/delete?_method=DELETE">
+    <input type="hidden" name="_method" value="DELETE">
+    <input type="text" name="deleteNum"/>
+    <button type="submit">Delete Number</button>
+</form>
+<ul>
+    {{#each numbers}}
+        <li>{{this.number}}</li>
+    {{/each}}
+</ul>
+    

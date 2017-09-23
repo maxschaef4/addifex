@@ -1,0 +1,36 @@
+{{#section 'head'}}
+    <title>My Cart</title>
+    <link rel="stylesheet" href="styles/cart_style.css"/>
+    <script src="scripts/test.js"></script>
+{{/section}}
+
+<div class="cartInfo_container col-12">
+        <h3>My Cart</h3>
+        <ul>
+            <li>Total: $100.00</li>
+            <li>Items: {{cart}}</li>
+        </ul>
+    </div>
+    <div class="item col-12">
+        <img src="../images/battery.jpg" class="col-2"/>
+        <div class="itemInfo_container col-9">
+            <ul>
+                <li>Product Name</li>
+                <li>$100.00</li>
+                <li id="shipping">+ $3.00 S&H</li>
+            </ul>
+            <form>
+                <p>Quantity</p>
+                <input type="text" value="1" id="quantity"/>
+            </form>
+            <button class="red col-2">Remove</button>
+        </div>
+    </div>
+    <div class="cartInfo_container col-12">
+        <center><p>Sorry, checkout is unavailable right now. Your cart will be saved.</p></center>
+    </div>
+</div>
+<footer class="col-12">
+    <p class="col-6"><a href="about.html">About Us</a> | <a href="contact.html">Contact Us</a> | <a href="">Privacy Policy</a> | <a href="">Terms & Conditions</a> | <a href="creatorLogin.html">Creator Account</a></p>
+    <p class="col-6">Copyright &copy 2017 Addifex, L.L.C. All Rights Reserved</p>
+</footer>
