@@ -4,7 +4,7 @@
 <h2>Product Listings</h2>
 {{#each products}}
     <p>{{this._id}}</p>
-    <a href="/product#{{this._id}}">
+    <a href="/product/{{this._id}}">
         <p>{{this.name}}</p>
     </a>
     <p>${{this.price}}</p>
