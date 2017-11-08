@@ -1,14 +1,23 @@
 {{#section 'head'}}
-    <title>Addifex</title>
-    <link rel="stylesheet" href="styles/signin_style.css"/>
-    <script src="scripts/test.js"></script>
+    <title>Sign In</title>
+    <link rel="stylesheet" href="styles/signin_style.css" type="text/css"/>
+    <!--<script src="scripts/signin_controller.js"></script>-->
 {{/section}}
-
-<form action="/signin" method="post">
-    <p>Email:</p>
-    <input type="text" name="email"/>
-    <p>Password:</p>
-    <input type="text" name="password"/>
-    <button type="submit">Sign In</button>
+<form id="welcome" class="welcome col-12" action="/signin" method="post">
+    <center><h2>Sign In</h2></center>
+    <div class="field_container col-12">
+        <h4>Email</h4>
+        <p id="emailError" class="error"></p>
+        <input id="email" name="email" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>Password</h4>
+        <p id="passwordError" class="error"></p>
+        <input id="password" name="password" class="text_field col-12" type="password" size="50"/>
+        <a href="forgot.html">Forgot Password</a>
+    </div>
+    <center><h4>{{status}}</h4></center>
+    <div class="button_container col-12">
+        <button class="green col-12" type="submit">Sign In</button>
+    </div>
 </form>
-<p>{{status}}</p>

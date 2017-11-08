@@ -7,48 +7,45 @@
 <div class="banner_container col-12">
     <div class="news_section col-8">
         <center>
-            <h2>Find the Coolest Products Created by Everyday Makers!</h2>
-            <p>Addifex is a marketplace for people to easily find awesome products coming out of the maker community. Our goal is to connect the world to the maker community's vast amounts of unique and one-off products. From electronics, to art, to furniture, to products that are in a category of their own: Addifex allows you to buy any kind of product dreamt up by the maker community!</p>
+            <h2>Find the newest products in the Addifex Marketplace!</h2>
+            <p>Addifex is marketplace designed to help inventors, entrepreneurs, and small businesses launch and sell their products.</p>
         </center>
     </div>
     <div class="account_container col-4">
         <div class="account_section col-12">
+            {{#if signedIn}}
             <h4>Cart</h4>
             <p>Cart Contains: {{cart}} Items</p>
             <div class="button_container col-12">
-                <a href="cart">
+                <a href="/cart">
                     <button class="green col-12">My Cart</button>
                 </a>
             </div>
             <h4>Account</h4>
             <a href="notifications">You have <span>0</span> notifications</a>
             <div class="button_container col-12">
-                <a href="account">
+                <a href="/account">
                     <button class="blue col-12">My Account</button>
                 </a>
             </div>
+            {{else}}
+                {{> signIn}}
+                <!--<h4>Sign In!</h4>
+                <div class="button_container col-12">
+                    <a href="/signin">
+                        <button class="green col-12">Sign In</button>
+                    </a>
+                </div>
+                <h4>No Account?</h4>
+                <div class="button_container col-12">
+                    <a href="/signup">
+                        <button class="blue col-12">Create Account</button>
+                    </a>
+                </div>-->
+            {{/if}}
         </div>
     </div>
 </div>
-<a href="/productList">
-    <button>Product Listings</button>
-</a>
-<a href="/signup">
-    <button>Make Account!</button>
-</a>
-<a href="signin">
-    <button>Sign In</button>
-</a>
-<a href="/account">
-    <button>My Account</button>
-</a>
-<a href="/image-upload">
-    <button>Add Image</button>
-</a>
-{{#each users}}
-    <p>{{this._id}}, {{this.name}}, {{this.email}}, {{this.password}}</p>
-    <hr>
-{{/each}}
 <div class="feed_container col-12">
     <div class="tabs_container col-12" id="tabContainer">
         <button class="red col-2" id="featuredButton" disabled>Featured</button>

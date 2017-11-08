@@ -29,5 +29,22 @@
         </div>
 {{/each}}
 <div class="cartInfo_container col-12">
-    <center><p>Sorry, checkout is unavailable right now. Your cart will be saved.</p></center>
+        {{#if signedIn}}
+                <div class="button_container col-12">
+                        <a href="/checkout">
+                                <button class="green col-12">Checkout</button>
+                        </a>
+                </div>
+        {{else}}
+                <div class="signIn_button_container col-6">
+                        <a href="/signup">
+                                <button class="blue col-12">Create Account</button>
+                        </a>
+                </div>
+                <div class="signIn_button_container col-6">
+                        <a href="/signin">
+                                <button class="green col-12">Sign In</button>
+                        </a>
+                </div>
+        {{/if}}
 </div>

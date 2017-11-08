@@ -41,7 +41,7 @@ const multer = require('multer');
 //    }
 //})
 const upload = multer({ dest: 'public/product-photos/'});
-const product = require('./product.js');
+const routes = require('./app/routes.js');
 //used for parsing and getting dynamically generated pages
 const url = require('url');
 //Custom modules
@@ -74,12 +74,21 @@ app.use(
 )
 //Gets image, script, styles, and vedor files from /public
 app.use(express.static(__dirname + '/public'));
-app.use('./product.js', product);
+
+//gets routes
+//app.use('/', router);
 
 //--------Partials Go Below Here-------
 
-function notSignedin() {
-    return 'Please Sign In!';
+
+//-------Helper functions go below here------
+
+function checkSignin(session) {
+    if (!session) {
+        return false;
+    }else{
+        return true;
+    }
 }
 
 mongoClient.connect(host, function(err, db){
@@ -122,48 +131,53 @@ mongoClient.connect(host, function(err, db){
                     
                     products = result;
                     
-                    res.render('index', {scooby : scooby.getScooby(), cart: getCartContent.countCart(req.session.cart), users: creators, products: products});
+                    res.render('index', {scooby : scooby.getScooby(), cart: getCartContent.countCart(req.session.cart), signedIn: checkSignin(req.session.user), users: creators, products: products});
                 }
             })
         })
         
-        //TEST: used for adding a number to a test collection then outputting all of them
-        app.post('/', function(req, res){
-            var query = {number: req.body.number};
+        app.get('/search/:query', function(req, res){
+            var query;
             
-            collie.insertOne(query, function(err, result) {
-                if (err){
+            if (req.params.query && req.body.search) {
+                query = req.body.search;
+            }else if(req.params.query){
+                query = req.params.query;
+            }else{
+                query = req.body.search;
+            }
+            
+            db.collection('testProducts').find({name: query}).toArray(function(err, result){
+                   if (err) {
                     console.log(err);
-                }
-                
-                res.redirect('/');
+                   }else{
+                    console.log(result);
+                    
+                    res.render('search', {products: result});
+                   }
             })
         })
         
-        app.get('/delete', function(req, res){
-            collie.find({}).toArray(function(err, result){
-                if (err){
+        app.post('/search/:query', function(req, res){
+            var query;
+            
+            if (req.params.query && req.body.search) {
+                query = req.body.search;
+            }else if(req.params.query){
+                query = req.params.query;
+            }else{
+                query = req.body.search;
+            }
+            
+            db.collection('testProducts').find({name: query}).toArray(function(err, result){
+                   if (err) {
                     console.log(err);
-                }
-                
-                console.log('Showing Numbers');
-                
-                var userNums = result;
-            })
-            
-            res.render('delete', {numbers: userNums});
-        })
-        
-        //TEST: Used for deleting a number, DELETE route must be declared inside a PUT callback
-        app.delete('/delete', function(req, res){
-            
-            var query = {number: req.body.deleteNum};
-            
-            collie.deleteOne(query, function(err, obj){
-                err ? console.log(err) : console.log('You deleted ' + obj);
-                
-                res.redirect('delete');
-            });
+                   }else{
+                    console.log(result);
+                    
+                    res.render('search', {products: result});
+                   }
+            })    
         })
         
         app.get('/signup', function(req, res){
@@ -172,7 +186,7 @@ mongoClient.connect(host, function(err, db){
         
         //Used for signing up a new creator
         app.post('/signup', function(req, res){
-            var newInfo = {name: req.body.name, email: req.body.newEmail, password: req.body.newPassword};
+            var newInfo = {name: req.body.name, email: req.body.email, password: req.body.password};
             
             db.collection('testCreator').insertOne(newInfo, function(err, result) {
                 if(err){
@@ -230,10 +244,57 @@ mongoClient.connect(host, function(err, db){
                         
                         message = 'Welcome ' + result[0].name + '!';
                         
-                        res.render('account', {status: message, creator: result[0]});
+                        res.render('account', {signedIn: checkSignin(req.session.user), creator: result[0]});
                     }
                 })
             }
+        })
+        
+        app.get('/notifications', function(req, res){
+            res.render('notifications');
+        })
+        
+        app.get('/cart', function(req, res){
+            
+            var cart = req.session.cart;
+            
+            db.collection('testProducts').find({'_id': req.session.cart}).toArray(function(err, result){
+                if (err) {
+                    console.log(err);
+                }else{
+                    console.log(cart);
+                    
+                    console.log(result);
+                    
+                    res.render('cart', {cart: getCartContent.countCart(req.session.cart), signedIn: checkSignin(req.session.user), products: result});
+                }
+            })
+        })
+        
+        app.get('/delete', function(req, res){
+            collie.find({}).toArray(function(err, result){
+                if (err){
+                    console.log(err);
+                }
+                
+                console.log('Showing Numbers');
+                
+                var userNums = result;
+            })
+            
+            res.render('delete', {numbers: userNums});
+        })
+        
+        //TEST: Used for deleting a number, DELETE route must be declared inside a PUT callback
+        app.delete('/delete', function(req, res){
+            
+            var query = {number: req.body.deleteNum};
+            
+            collie.deleteOne(query, function(err, obj){
+                err ? console.log(err) : console.log('You deleted ' + obj);
+                
+                res.redirect('delete');
+            });
         })
         
         var product;
@@ -289,23 +350,6 @@ mongoClient.connect(host, function(err, db){
                 }
                 
                 res.render('productList');
-            })
-        })
-        
-        app.get('/cart', function(req, res){
-            
-            var cart = req.session.cart;
-            
-            db.collection('testProducts').find({'_id': req.session.cart}).toArray(function(err, result){
-                if (err) {
-                    console.log(err);
-                }else{
-                    console.log(cart);
-                    
-                    console.log(result);
-                    
-                    res.render('cart', {cart: getCartContent.countCart(req.session.cart), products: result});
-                }
             })
         })
         
