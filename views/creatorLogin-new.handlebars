@@ -1,0 +1,85 @@
+{{#section 'head'}}
+    <link rel="stylesheet" href="styles/creatorLogin_style.css" type="text/css"/>
+    <title>Open Shop</title>
+{{/section}}
+
+<form id="newShop" class="col-12">
+    <center><h2>Personal Information</h2></center>
+    <div class="field_container col-12">
+        <h4>Full Name</h4>
+        <p id="fullNameError" class="error"></p>
+        <input id="fullName" name="fullName" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>Email</h4>
+        <p id="emailError" class="error"></p>
+        <input id="email" name="email" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>Address</h4>
+        <p id="addressError" class="error"></p>
+        <input id="address" name="address" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>City</h4>
+        <p id="cityError" class="error"></p>
+        <input id="city" name="city" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>State</h4>
+        <p id="stateError" class="error"></p>
+        <select id="state" name="state" class="col-3">
+            <option>Alabama</option>
+        </select>
+    </div>
+    <div class="field_container col-12">
+        <h4>Zipcode</h4>
+        <p id="zipcodeError" class="error"></p>
+        <input id="zipcode" name="zipcode" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <center><h2>Shop Information</h2></center>
+    <div class="field_container col-12">
+        <h4>Shop Name</h4>
+        <p>*This will also be used as your Creator Name and your shop and products will be referenced by this name</p>
+        <p id="shopNameError" class="error"></p>
+        <input id="shopName" name="shopName" class="text_field col-12" type="text"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>Shop Description</h4>
+        <p>*This describes who you and your shop are. You can include personal and shop history, the products you make, your mission statement, etc.</p>
+        <p id="descriptionError" class="error"></p>
+        <textarea class="col-12"></textarea>
+    </div>
+    <div class="field_container col-12">
+        <h4>Shop Image</h4>
+        <p>*This will be displayed on your shop page. The image can be your logo, a picture of you, etc.</p>
+        <p>**Image size must be less than 1 MB and the image dimensions must be 1:1 and greater than 100px by 100px.</p>
+        <p id="shopImageError" class="error"></p>
+        <input id="shopImage" name="shopImage" class="file_input" type="file"/>
+        <label for="shopImage" id="imageLabel" class="col-3">Choose a file...</label>
+    </div>
+    <div class="field_container col-12">
+        <h4>Shop Category</h4>
+        <p id="shopCategoryError" class="error"></p>
+        <select id="shopCategory" name="shopCategory" class="col-3">
+            <option>Select a Category</option>
+            <option>Art</option>
+            <option>Consumer Products</option>
+            <option>Electronics</option>
+            <option>Furniture</option>
+            <option>Metalworks</option>
+            <option>Other</option>
+            <option>Miscellaneous</option>
+        </select>
+    </div>
+    <div class="field_container col-12">
+        <h4>Shop Keywords</h4>
+        <p>*Keywords are used to help people search for your shop. You can add up to 10 keywords.</p>
+        <p id="keywordsError" class="error"></p>
+        <input id="keywords" name="keywords" class="text_field col-4" type="text"/>
+        <button id="addKeyword" class="addKeyword_button green col-1">+</button>
+    </div>
+    <div class="button_container col-12">
+        <button class="blue col-12" id="signup">Open Shop</button>
+    </div>
+</form>

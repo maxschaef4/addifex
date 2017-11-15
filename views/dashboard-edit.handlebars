@@ -1,0 +1,74 @@
+{{#section 'head'}}
+    <link rel="stylesheet" href="styles/dashboard-edit_style.css" type="text/css"/>
+    <title>Edit Shop</title>
+{{/section}}
+
+<div class="sideButtons_container col-3">
+    <ul>
+        <a href="/dashboard">
+            <li class="side_button col-12">Dashboard Home</li>
+        </a>
+        <a href="/dashboard-orders">
+            <li class="side_button col-12">Orders</li>
+        </a>
+        <a href="/dashboard-products">
+            <li class="side_button col-12">Products</li>
+        </a>
+        <a href="/dashboard-sales">
+            <li class="side_button col-12">Sales</li>
+        </a>
+        <a href="/dashboard-edit">
+            <li class="side_button col-12">Edit Shop</li>
+        </a>
+        <a href="/dashboard-info">
+            <li class="side_button col-12">Shop Info</li>
+        </a>
+        <a href="/dashboard-help">
+            <li class="side_button col-12">Help</li>
+        </a>
+    </ul>
+</div>
+<div class="rightSection_container col-9">
+    <h2>Edit Shop</h2>
+    <form>
+        <center><h3>Shop Information</h3></center>
+        <div class="field_container col-12">
+            <h4>Description</h4>
+            <p>*This describes who you and your shop are. You can include personal and shop history, the products you make, your mission statement, etc.</p>
+            <p id="descriptionError" class="error"></p>
+            <textarea class="col-12"></textarea>
+        </div>
+        <div class="field_container col-12">
+            <h4>Shop Image</h4>
+            <p>*This will be displayed on your shop page. The image can be your logo, a picture of you, etc.</p>
+            <p>**Image size must be less than 1 MB and the image dimensions must be 1:1 and greater than 100px by 100px.</p>
+            <p id="shopImageError" class="error"></p>
+            <input id="shopImage" name="shopImage" class="file_input" type="file"/>
+            <label for="shopImage" id="imageLabel" class="col-3">Choose a file...</label>
+        </div>
+        <div class="field_container col-12">
+            <h4>Category</h4>
+            <p id="shopCategoryError" class="error"></p>
+            <select id="shopCategory" name="shopCategory" class="col-3">
+                <option>Select a Category</option>
+                <option>Art</option>
+                <option>Consumer Products</option>
+                <option>Electronics</option>
+                <option>Furniture</option>
+                <option>Metalworks</option>
+                <option>Other</option>
+                <option>Miscellaneous</option>
+            </select>
+        </div>
+        <div class="field_container col-12">
+            <h4>Keywords</h4>
+            <p>*Keywords are used to help people search for your shop. You can add up to 10 keywords.</p>
+            <p id="keywordsError" class="error"></p>
+            <input id="keywords" name="keywords" class="text_field col-4" type="text"/>
+            <button id="addKeyword" class="addKeyword_button green col-1">+</button>
+        </div>
+        <div class="button_container col-12">
+            <button class="blue col-12" id="signup">Update</button>
+        </div>
+    </form>
+</div>

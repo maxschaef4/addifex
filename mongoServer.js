@@ -64,14 +64,14 @@ app.use(
     })
 )
 //cookie for storing cart details...active for 24 hours
-app.use(
-    session({
-        cookieName: 'cart',
-        secret: 'Not sure yet',
-        duration: 24 * 60 * 60 * 1000,
-        activeDuration: 60 * 60 * 1000,
-    })
-)
+//app.use(
+//    session({
+//        cookieName: 'cart',
+//        secret: 'Not sure yet',
+//        duration: 24 * 60 * 60 * 1000,
+//        activeDuration: 60 * 60 * 1000,
+//    })
+//)
 //Gets image, script, styles, and vedor files from /public
 app.use(express.static(__dirname + '/public'));
 
@@ -181,19 +181,19 @@ mongoClient.connect(host, function(err, db){
         })
         
         app.get('/signup', function(req, res){
-            res.render('signup');
+            res.render('signup', {layout: 'simple.handlebars'});
         })
         
         //Used for signing up a new creator
         app.post('/signup', function(req, res){
-            var newInfo = {name: req.body.name, email: req.body.email, password: req.body.password};
+            var info = {name: req.body.name, email: req.body.email, password: req.body.password};
             
-            db.collection('testCreator').insertOne(newInfo, function(err, result) {
+            db.collection('testCreator').insertOne(info, function(err, result) {
                 if(err){
                     console.log(err);
                 }
                 
-                req.session.user = newInfo._id;
+                req.session.user = info._id;
                 
                 console.log(newInfo);
                 
@@ -202,27 +202,27 @@ mongoClient.connect(host, function(err, db){
         });
         
         app.get('/signin', function(req, res){
-            res.render('signin', {status: ''});
+            res.render('signin', {status: '', layout: 'simple.handlebars'});
         })
         
         app.post('/signin', function(req, res){
             var getSigninInfo = {email: req.body.email, password: req.body.password};
             
-            db.collection('testCreator').findOne(getSigninInfo, function(err, result){
+            db.collection('testCreator').find(getSigninInfo).toArray(function(err, result){
                 if (err) {
                     console.log(err);
                 }
                 
                 var message;
                 
-                console.log(result);
+                console.log(result[0]);
                 
                 if (!result) {
                     message = 'Email/Password are incorrect you fucking stupid little bitch';
                 }else{
-                    req.session.user = result._id;
+                    req.session.user = result[0]._id;
                     
-                    message = 'Welcome to Addifex Bitch!!!!!!!!!!!!' + result._id;
+                    message = 'Welcome to Addifex Bitch!!!!!!!!!!!!' + result[0]._id;
                 }
                 
                 res.render('signin', {status: message});
@@ -255,46 +255,26 @@ mongoClient.connect(host, function(err, db){
         })
         
         app.get('/cart', function(req, res){
-            
-            var cart = req.session.cart;
-            
-            db.collection('testProducts').find({'_id': req.session.cart}).toArray(function(err, result){
-                if (err) {
-                    console.log(err);
-                }else{
-                    console.log(cart);
-                    
-                    console.log(result);
-                    
-                    res.render('cart', {cart: getCartContent.countCart(req.session.cart), signedIn: checkSignin(req.session.user), products: result});
-                }
-            })
+            if (req.session.cart) {
+                for(var i = 0; i < req.session.cart.length; i++)
+                    req.session.cart[i] = ObjectId(req.session.cart[i]);
+                
+                db.collection('testProducts').find({'_id': {$in: req.session.cart}}).toArray(function(err, result){
+                    if (err) {
+                        console.log(err);
+                    }else{
+                        console.log(result);
+                        
+                        res.render('cart', {cart: getCartContent.countCart(req.session.cart), products: result, message: '', signedIn: checkSignin(req.session.user)});
+                    }
+                })
+            }else{
+                res.render('cart', {cart: getCartContent.countCart(req.session.cart), message: 'Cart is Empty', signedIn: checkSignin(req.session.user)});
+            }
         })
         
-        app.get('/delete', function(req, res){
-            collie.find({}).toArray(function(err, result){
-                if (err){
-                    console.log(err);
-                }
-                
-                console.log('Showing Numbers');
-                
-                var userNums = result;
-            })
+        app.post('/cart', function(req, res){
             
-            res.render('delete', {numbers: userNums});
-        })
-        
-        //TEST: Used for deleting a number, DELETE route must be declared inside a PUT callback
-        app.delete('/delete', function(req, res){
-            
-            var query = {number: req.body.deleteNum};
-            
-            collie.deleteOne(query, function(err, obj){
-                err ? console.log(err) : console.log('You deleted ' + obj);
-                
-                res.redirect('delete');
-            });
         })
         
         var product;
@@ -308,7 +288,7 @@ mongoClient.connect(host, function(err, db){
                     
                     product = result[0];
                     
-                    res.render('product', {product: result[0]});
+                    res.render('product', {product: result[0], inCart: getCartContent.inCart(req.session.cart, req.params.id)});
                 }
             })
         })
@@ -319,38 +299,91 @@ mongoClient.connect(host, function(err, db){
             }else{
                 req.session.cart = [req.body.productId];
             }
+            console.log(ObjectId(req.body.productId));
             
             console.log(req.session.cart);
             
-            res.render('product', {product: product});
+            res.render('product', {product: product, inCart: getCartContent.inCart(req.session.cart, req.params.id)});
         })
         
-        app.get('/productList', function(req, res){
-            db.collection('testProducts').find({}).toArray(function(err, result){
-                if (err) {
-                    console.log(err);
-                }
-                
-                products = result;
-                
-                res.render('productList', {products: products});
-            })
+        app.get('shop/:id', function(req, res){
+            res.render('shop');
         })
         
-        app.get('/addProduct', function(req, res){
-            res.render('addProduct');
+        app.get('/creatorLogin', function(req, res){
+            res.render('creatorLogin', {layout: 'simple.handlebars'});
         })
         
-        app.post('/addProduct', function(req, res){
-            var query = {name: req.body.name, price: req.body.price};
+        app.post('/creatorLogin', function(req, res){
+            var creatorLogin = {email: req.body.email, password: req.body.password};
             
-            db.collection('testProducts').insertOne(query, function(err, result){
+            db.collection('testCreator').find(creatorLogin).toArray(function(err, result){
                 if (err) {
                     console.log(err);
                 }
                 
-                res.render('productList');
+                var message;
+                
+                console.log(result);
+                
+                if (!result) {
+                    message = 'Email/Password are incorrect you fucking stupid little bitch';
+                    
+                    res.render('creatorLogin', {status: message});
+                }else{
+                    req.session.creator = result._id;
+                    
+                    res.redirect('dashboard');
+                }
             })
+        })
+        
+        app.get('/creatorLogin-new', function(req, res){
+            res.render('creatorLogin-new', {layout: 'simple.handlebars'});
+        })
+        
+        app.get('/dashboard', function(req, res){
+            res.render('dashboard', {layout: 'simple.handlebars'});
+        })
+        
+        app.get('/dashboard-orders', function(req, res){
+            res.render('dashboard-orders', {layout: 'simple.handlebars'});
+        })
+        
+        app.get('/dashboard-products', function(req, res){
+            res.render('dashboard-products', {layout: 'simple.handlebars'});
+        })
+        
+        app.get('/dashboard-products-view', function(req, res){
+            res.render('dashboard-products-view', {layout: 'simple.handlebars'});
+        })
+        
+        app.get('/dashboard-products-new', function(req, res){
+            res.render('dashboard-products-new', {layout: 'simple.handlebars'});
+        })
+        
+        app.get('/dashboard-sales', function(req, res){
+            res.render('dashboard-sales', {layout: 'simple.handlebars'});
+        })
+        
+        app.get('/dashboard-edit', function(req, res){
+            res.render('dashboard-edit', {layout: 'simple.handlebars'});
+        })
+        
+        app.get('/dashboard-info', function(req, res){
+            res.render('dashboard-info', {layout: 'simple.handlebars'});
+        })
+        
+        app.get('/dashboard-help', function(req, res){
+            res.render('dashboard-help', {layout: 'simple.handlebars'})
+        })
+        
+        app.get('/about', function(req, res){
+            res.render('about');    
+        })
+        
+        app.get('/contact', function(req, res){
+            res.render('contact');
         })
         
         app.get('/image-upload', function(req, res){

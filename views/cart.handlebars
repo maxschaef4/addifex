@@ -11,6 +11,7 @@
             <li>Items: {{cart}}</li>
         </ul>
 </div>
+<center><h3>{{message}}</h3></center>
 {{#each products}}
         <div class="item col-12">
                 <img src="../images/battery.jpg" class="col-2"/>
@@ -24,7 +25,10 @@
                             <p>Quantity</p>
                             <input type="text" value="1" id="quantity"/>
                         </form>
-                        <button class="red col-2">Remove</button>
+                        <form action="/cart" method="post">
+                                <button type="submit" class="red col-2">Remove</button>
+                                <input type="hidden" name="productId" value="{{this._id}}"/>
+                        </form>
                 </div>
         </div>
 {{/each}}
@@ -36,14 +40,15 @@
                         </a>
                 </div>
         {{else}}
-                <div class="signIn_button_container col-6">
-                        <a href="/signup">
-                                <button class="blue col-12">Create Account</button>
-                        </a>
-                </div>
+                <center><h4>You must be signed in to checkout!</h4></center>
                 <div class="signIn_button_container col-6">
                         <a href="/signin">
                                 <button class="green col-12">Sign In</button>
+                        </a>
+                </div>
+                <div class="signIn_button_container col-6">
+                        <a href="/signup">
+                                <button class="blue col-12">Create Account</button>
                         </a>
                 </div>
         {{/if}}

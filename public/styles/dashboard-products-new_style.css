@@ -127,6 +127,10 @@ button{
   cursor: pointer;
 }
 
+div.field_container button{
+  border-radius: 0px;
+}
+
 button.red{
   background-color: #d9534f;
 }
@@ -287,10 +291,6 @@ textarea{
   font-size: 15px;
 }
 
-div.option_container{
-  padding: 0px 2% 0px 2%;
-}
-
 div.images_container{
   padding: 5px 0px 0px 0px;
 }
@@ -299,8 +299,20 @@ img.productImage{
   border: solid 2px #f9f9f9;
 }
 
-div.addOption_container{
-  display: none;
+div.option_container{
+  padding: 0px 2% 0px 2%;
+}
+
+ul.options_list{
+  padding: 0px;
+  
+  text-align: center;
+}
+
+ul.options_list li{
+  margin-top: 5px;
+  
+  list-style: none;
 }
 
 select{

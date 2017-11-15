@@ -94,7 +94,7 @@ body{
   background-color: #f9f9f9;
 }
 
-h2, h3, h4, p, li{
+h1, h2, h3, h4, p, li{
   font-family: sans-serif;
   color: #313131;
   
@@ -102,21 +102,22 @@ h2, h3, h4, p, li{
 }
 
 a:link, a:active, a:visited{
-  font-family: sans-serif;
-  text-decoration: underline;
-  font-weight: 400;
+  text-decoration: none;
+  font-weight: 500;
   color: #313131;
 }
 
 a:hover{
+  text-decoration: none;
   font-weight: 600;
+  color: #313131;
 }
 
 button{
   height: 40px;
   
   border: none;
-  border-radius: 5px;
+  
   outline: none;
   
   font-size: 13px;
@@ -156,61 +157,6 @@ header{
   background-color: #313131;
 }
 
-form.search_form{
-  height: 100%;
-  
-  padding: 0px 0px 0px 1%;
-}
-
-#input{
-  height: 40px;
-  
-  border: none;
-  outline: none;
-  
-  font-size: 15px;
-}
-
-select#category{
-  height: 40px;
-  
-  border: none;
-  border-radius: 0px;
-  outline: none;
-}
-
-#search{
-  border-radius: 0px;
-  
-  background: url("../images/search_icon.png") center no-repeat;
-  background-size: 28px 13px;
-  background-color: #d9534f;
-}
-
-#search:hover{
-  background-color: #ad423f;
-}
-
-div.headerButton_container{
-  padding: 0px 0px 0px 1%;
-}
-
-button.cart_button{
-  border-radius: 0px;
-}
-
-button.cart_button:hover{
-  
-}
-
-button.account_button{
-  border-radius: 0px;
-}
-
-button.account_button:hover{
-  
-}
-
 article{
   padding: 10px 8.33% 0px 8.33%;
 }
@@ -218,105 +164,42 @@ article{
 div.content_container{
   border: solid 1px #c7c7c7;
   
-  padding: 5px 2% 5px 2%;
+  padding: 20px 2% 5px 2%;
   
   background-color: #f9f9f9;
 }
 
-div.news_section{
-  border: solid 1px #313131;
-  border-radius: 5px;
-}
-
-div.news_section p{
-  line-height: 20px;
-}
-
-div.account_container{
-  padding: 0px 3% 0px 3%;
-}
-
-div.account_section{
-  border: solid 1px #313131;
-  border-radius: 5px;
-  
-  padding: 5px 1% 5px 1%;
-  text-align: center;
-  line-height: 25px;
-}
-
-div.account_section .button_container{
-  padding: 10px 8.33% 10px 8.33%;
-}
-
-div.feed_container{
-  padding-top: 10px;
-}
-
-div.feed_container button{
-  border-radius: 0px;
-}
-
-div.tabs_container{
-  border-bottom: solid 1px #313131;
-  
-  padding-bottom: 3px;
-}
-
-button#featuredButton:disabled{
-  background-color: #ad423f;
-  
-  border-bottom: solid 3px #d9534f;
-}
-
-button#popularButton:disabled{
-  background-color: #499349;
-  
-  border-bottom: solid 3px #5cb85c;
-}
-
-button#newestButton:disabled{
-  background-color: #4899b1;
-  
-  border-bottom: solid 3px #5bc0de;
-}
-
-div.product_container{
-  padding: 5px 1% 5px 1%;
+div.sideButtons_container ul{
+  margin: 0px;
+  padding: 0px;
   
   cursor: pointer;
 }
 
-div.product_container:hover{
-  opacity: .6;
-}
-
-img.product{
-  height: auto;
+div.sideButtons_container ul li{
+  height: 40px;
   
-  background-color: transparent;
-  opacity: 1;
-  
-  -webkit-transition: opacity .4;
-  transition: opacity .4s;
-}
-
-div.productInfo_container{
-  border: solid 1px #c7c7c7;
-  border-top: hidden;
-  
-  padding: 5px 1% 5px 1px;
-}
-
-div.productInfo_container ul{
-  margin: 0px;
-  padding: 0px;
-}
-
-div.productInfo_container ul li{
   list-style: none;
   
-  overflow: hidden;
+  border-bottom: solid 2px #c7c7c7;
+  
+  padding: 12px 0px 0px 0px;
+  
+  text-align: center;
+  
+  font-family: sans-serif;
+  font-size: 15px;
+  color: #313131;
+}
+
+div.sideButtons_container ul li:hover{
+  background-color: #c7c7c7;
+  
+  font-weight: 600;
+}
+
+div.rightSection_container{
+  padding: 0px 0px 0px 10px;
 }
 
 footer{
