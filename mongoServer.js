@@ -40,10 +40,8 @@ const multer = require('multer');
 //        cb(null, file.originalname);
 //    }
 //})
-const upload = multer({ dest: 'public/product-photos/'});
+const upload = multer({ dest: 'creator-images/'});
 const routes = require('./app/routes.js');
-//used for parsing and getting dynamically generated pages
-const url = require('url');
 //Custom modules
 const scooby = require('./lib/scooby.js');
 const getCartContent = require('./lib/cartContent.js');
@@ -102,8 +100,6 @@ mongoClient.connect(host, function(err, db){
         app.listen(port);
         console.log('Listening on port: ' + port);
         
-        var collie = db.collection('testCollection');
-        
         var creators, products;
         
         //Renders the index page
@@ -115,8 +111,6 @@ mongoClient.connect(host, function(err, db){
                     console.log(err);
                 }
                 
-                console.log('showing users');
-                
                 creators = result;
             })
             
@@ -127,8 +121,6 @@ mongoClient.connect(host, function(err, db){
                 if (err) {
                     console.log(err);
                 }else{
-                    console.log('Showing products');
-                    
                     products = result;
                     
                     res.render('index', {scooby : scooby.getScooby(), cart: getCartContent.countCart(req.session.cart), signedIn: checkSignin(req.session.user), users: creators, products: products});
@@ -254,6 +246,8 @@ mongoClient.connect(host, function(err, db){
             res.render('notifications');
         })
         
+        var productsInCart;
+        
         app.get('/cart', function(req, res){
             if (req.session.cart) {
                 for(var i = 0; i < req.session.cart.length; i++)
@@ -263,7 +257,7 @@ mongoClient.connect(host, function(err, db){
                     if (err) {
                         console.log(err);
                     }else{
-                        console.log(result);
+                        productsInCart = result;
                         
                         res.render('cart', {cart: getCartContent.countCart(req.session.cart), products: result, message: '', signedIn: checkSignin(req.session.user)});
                     }
@@ -274,7 +268,13 @@ mongoClient.connect(host, function(err, db){
         })
         
         app.post('/cart', function(req, res){
+            for(var i = 0; i < req.session.cart.length; i++){
+                if (req.body.productId == req.session.cart[i]) {
+                    req.session.cart.splice(i, 1);
+                }
+            }
             
+            res.redirect('cart');
         })
         
         var product;
@@ -284,11 +284,9 @@ mongoClient.connect(host, function(err, db){
                 if (err) {
                     console.log(err);
                 }else{
-                    console.log(result[0]);
-                    
                     product = result[0];
                     
-                    res.render('product', {product: result[0], inCart: getCartContent.inCart(req.session.cart, req.params.id)});
+                    res.render('product', {product: product, inCart: getCartContent.inCart(req.session.cart, req.params.id)});
                 }
             })
         })
@@ -342,6 +340,48 @@ mongoClient.connect(host, function(err, db){
             res.render('creatorLogin-new', {layout: 'simple.handlebars'});
         })
         
+        app.post('/creatorLogin-new', upload.single('shopImage'), function(req, res, next){
+            
+            var info = {
+                fullName: req.body.fullName,
+                email: req.body.email,
+                password: req.body.password,
+                shipping: {
+                    address: req.body.address,
+                    city: req.body.city,
+                    state: req.body.state,
+                    zip: req.body.zip,
+                },
+                billing: {
+                    address: req.body.address,
+                    city: req.body.city,
+                    state: req.body.state,
+                    zip: req.body.zip,
+                },
+                shopName: req.body.shopName,
+                description: req.body.description,
+                category: req.body.category,
+                keywords: req.body.keywords,
+            }
+            
+            console.log(req.file.originalname);
+            
+            db.collection('testCreators').insertOne(info, function(err, result){
+                if (err) {
+                    console.log(err);
+                }else{
+                    
+                    req.session.creator = info._id;
+                    
+                    console.log(result);
+                    console.log("User Id: " + info._id);
+                    console.log("Session: " + req.session.creator)
+                    
+                    res.redirect('/dashboard');
+                }
+            })
+        })
+        
         app.get('/dashboard', function(req, res){
             res.render('dashboard', {layout: 'simple.handlebars'});
         })
@@ -367,11 +407,35 @@ mongoClient.connect(host, function(err, db){
         })
         
         app.get('/dashboard-edit', function(req, res){
-            res.render('dashboard-edit', {layout: 'simple.handlebars'});
+            if (req.session.creator) {
+                db.collection('testCreators').find(ObjectId(req.session.creator)).toArray(function(err, result){
+                    if (err) {
+                        console.log(err);
+                    }else{
+                        console.log(result);
+                        
+                        res.render('dashboard-edit', { creator: result[0], layout: 'simple.handlebars'});
+                    }
+                })
+            }else{
+                res.render('dashboard-edit', {layout: 'simple.handlebars'});
+            }
         })
         
         app.get('/dashboard-info', function(req, res){
-            res.render('dashboard-info', {layout: 'simple.handlebars'});
+            if (req.session.creator) {
+                db.collection('testCreators').find(ObjectId(req.session.creator)).toArray(function(err, result){
+                    if (err) {
+                        console.log(err);
+                    }else{
+                        console.log(result);
+                        
+                        res.render('dashboard-info', { creator: result[0], layout: 'simple.handlebars'});
+                    }
+                })
+            }else{
+                res.render('dashboard-info', {layout: 'simple.handlebars'});
+            }
         })
         
         app.get('/dashboard-help', function(req, res){
@@ -384,10 +448,6 @@ mongoClient.connect(host, function(err, db){
         
         app.get('/contact', function(req, res){
             res.render('contact');
-        })
-        
-        app.get('/image-upload', function(req, res){
-            res.render('image-upload', {status: '',});
         })
         
         //app.post('/image-upload', upload.single('userImage'), function(req, res, next){

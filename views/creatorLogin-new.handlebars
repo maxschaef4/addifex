@@ -3,7 +3,7 @@
     <title>Open Shop</title>
 {{/section}}
 
-<form id="newShop" class="col-12">
+<form id="newShop" class="col-12" action="/creatorLogin-new" method="post" enctype="multipart/form-data">
     <center><h2>Personal Information</h2></center>
     <div class="field_container col-12">
         <h4>Full Name</h4>
@@ -14,6 +14,11 @@
         <h4>Email</h4>
         <p id="emailError" class="error"></p>
         <input id="email" name="email" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>Password</h4>
+        <p id="passwordError" class="error"></p>
+        <input id="password" name="password" class="text_field col-12" type="password" size="50"/>
     </div>
     <div class="field_container col-12">
         <h4>Address</h4>
@@ -35,7 +40,7 @@
     <div class="field_container col-12">
         <h4>Zipcode</h4>
         <p id="zipcodeError" class="error"></p>
-        <input id="zipcode" name="zipcode" class="text_field col-12" type="text" size="50"/>
+        <input id="zipcode" name="zip" class="text_field col-12" type="text" size="50"/>
     </div>
     <center><h2>Shop Information</h2></center>
     <div class="field_container col-12">
@@ -48,7 +53,7 @@
         <h4>Shop Description</h4>
         <p>*This describes who you and your shop are. You can include personal and shop history, the products you make, your mission statement, etc.</p>
         <p id="descriptionError" class="error"></p>
-        <textarea class="col-12"></textarea>
+        <textarea name="description" class="col-12"></textarea>
     </div>
     <div class="field_container col-12">
         <h4>Shop Image</h4>
@@ -61,7 +66,7 @@
     <div class="field_container col-12">
         <h4>Shop Category</h4>
         <p id="shopCategoryError" class="error"></p>
-        <select id="shopCategory" name="shopCategory" class="col-3">
+        <select id="shopCategory" name="category" class="col-3">
             <option>Select a Category</option>
             <option>Art</option>
             <option>Consumer Products</option>

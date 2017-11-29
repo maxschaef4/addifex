@@ -29,20 +29,24 @@
     </ul>
 </div>
 <div class="rightSection_container col-9">
-    <h2>Shop Info</h2>
+    <h2>Creator and Shop Info</h2>
     <ul>
-        <li>maxschaef31@gmail.com</li>
-        <li>leCreator</li>
+        <h4>Creator Info</h4>
+        <li>Name: {{creator.fullName}}</li>
+        <li>Email: {{creator.email}}</li>
         <br>
         <h4>Shipping Info</h4>
-        <li>Maxwell Schaefer</li>
-        <li>5742 Tuscany Lane</li>
-        <li>Waunakee, Wisconsin 53597</li>
+        <li>{{creator.shipping.address}}</li>
+        <li>{{creator.shipping.city}}, {{creator.shipping.state}} {{creator.shipping.zip}}</li>
         <br>
         <h4>Billing Info</h4>
-        <li>Maxwell Schaefer</li>
-        <li>5742 Tuscany Lane</li>
-        <li>Waunakee, Wisconsin 53597</li>
+        <li>{{creator.billing.address}}</li>
+        <li>{{creator.billing.city}}, {{creator.billing.state}} {{creator.billing.zip}}</li>
+        <h4>Shop Info</h4>
+        <li>Name: {{creator.shopName}}</li>
+        <li>Description: {{creator.description}}</li>
+        <li>Category: {{creator.category}}</li>
+        <li>Keywords: {{creator.keywords}}</li>
     </ul>
     <a href="creatorInfo-edit.html">
         <button class="info_button red col-3">Edit Info</button>

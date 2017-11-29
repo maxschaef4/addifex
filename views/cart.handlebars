@@ -1,55 +1,57 @@
 {{#section 'head'}}
-        <title>My Cart</title>
-        <link rel="stylesheet" href="styles/cart_style.css"/>
-        <script src="scripts/test.js"></script>
+    <title>My Cart</title>
+    <link rel="stylesheet" href="styles/cart_style.css"/>
+    <script src="scripts/test.js"></script>
 {{/section}}
 
 <div class="cartInfo_container col-12">
-        <h3>My Cart</h3>
-        <ul>
-            <li>Total: $100.00</li>
-            <li>Items: {{cart}}</li>
-        </ul>
+    <h3>My Cart</h3>
+    <ul>
+        <li>Total: $100.00</li>
+        <li>Items: {{cart}}</li>
+    </ul>
 </div>
 <center><h3>{{message}}</h3></center>
 {{#each products}}
-        <div class="item col-12">
-                <img src="../images/battery.jpg" class="col-2"/>
-                <div class="itemInfo_container col-9">
-                        <ul>
-                            <li>{{this.name}}</li>
-                            <li>${{this.price}}</li>
-                            <li id="shipping">+ $3.00 S&H</li>
-                        </ul>
-                        <form>
-                            <p>Quantity</p>
-                            <input type="text" value="1" id="quantity"/>
-                        </form>
-                        <form action="/cart" method="post">
-                                <button type="submit" class="red col-2">Remove</button>
-                                <input type="hidden" name="productId" value="{{this._id}}"/>
-                        </form>
-                </div>
+    <div class="item col-12">
+        <a href="/product/{{this._id}}">
+            <img src="../images/battery.jpg" class="col-2"/>
+        </a>
+        <div class="itemInfo_container col-9">
+            <ul>
+                <li>{{this.name}}</li>
+                <li>${{this.price}}</li>
+                <li id="shipping">+ $3.00 S&H</li>
+            </ul>
+            <form>
+                <p>Quantity</p>
+                <input type="text" value="1" id="quantity"/>
+            </form>
+            <form action="/cart" method="post">
+                <button type="submit" class="red col-2">Remove</button>
+                <input type="hidden" name="productId" value="{{this._id}}"/>
+            </form>
         </div>
+    </div>
 {{/each}}
 <div class="cartInfo_container col-12">
-        {{#if signedIn}}
-                <div class="button_container col-12">
-                        <a href="/checkout">
-                                <button class="green col-12">Checkout</button>
-                        </a>
-                </div>
-        {{else}}
-                <center><h4>You must be signed in to checkout!</h4></center>
-                <div class="signIn_button_container col-6">
-                        <a href="/signin">
-                                <button class="green col-12">Sign In</button>
-                        </a>
-                </div>
-                <div class="signIn_button_container col-6">
-                        <a href="/signup">
-                                <button class="blue col-12">Create Account</button>
-                        </a>
-                </div>
-        {{/if}}
+    {{#if signedIn}}
+        <div class="button_container col-12">
+            <a href="/checkout">
+                <button class="green col-12">Checkout</button>
+            </a>
+        </div>
+    {{else}}
+        <center><h4>You must be signed in to checkout!</h4></center>
+        <div class="signIn_button_container col-6">
+            <a href="/signin">
+                <button class="green col-12">Sign In</button>
+            </a>
+        </div>
+        <div class="signIn_button_container col-6">
+            <a href="/signup">
+                <button class="blue col-12">Create Account</button>
+            </a>
+        </div>
+    {{/if}}
 </div>
