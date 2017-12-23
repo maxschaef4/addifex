@@ -1,6 +1,15 @@
 window.onload = function () {
+    
+    //Variables for creating the shipping time value
+    var shipNum = document.getElementById('shipNum');
+    var shipSelect = document.getElementById('shipUnit');
+    var shipTime = document.getElementById('shipTime');
+    //Variables for creating the build time value
+    var buildNum = document.getElementById('buildNum');
+    var buildSelect = document.getElementById('buildUnit')
+    var buildTime = document.getElementById('buildTime');
     //Variables for the "File Select" input
-    var shopImage = document.getElementById('productImage');
+    var productImage = document.getElementById('productImage');
     var label = document.getElementById('imageLabel');
     var productsContainer = document.getElementById('imageContainer');
     var deleteImage = document.getElementById('deleteImage');
@@ -33,8 +42,10 @@ window.onload = function () {
     var keywordList = [];
     var deleteLastKeyword = document.getElementById('deleteLastKeyword');
     
-    if (shopImage.attachEvent) {
-        shopImage.attachEvent('onchange', imageSelect);
+    if (productImage.attachEvent) {
+        shipSelect.attachEvent('onchange', addShipTime);
+        buildSelect.attachEvent('onchange', addBuildTime);
+        productImage.attachEvent('onchange', imageSelect);
         deleteImage.attachEvent('onclick', deleteLastImage);
         addColorButton.attachEvent('onclick', addColor);
         deleteColorButton.attachEvent('onclick', deleteColor);
@@ -45,7 +56,9 @@ window.onload = function () {
         addKeywordButton.attachevent('onclick', addKeyword);
         deleteLastKeyword.attachEvent('onclick', deleteKeyword);
     }else{
-        shopImage.addEventListener('change', imageSelect);
+        shipSelect.addEventListener('change', addShipTime);
+        buildSelect.addEventListener('change', addBuildTime);
+        productImage.addEventListener('change', imageSelect);
         deleteImage.addEventListener('click', deleteLastImage);
         addColorButton.addEventListener('click', addColor);
         deleteColorButton.addEventListener('click', deleteColor);
@@ -55,6 +68,14 @@ window.onload = function () {
         deleteOtherButton.addEventListener('click', deleteOther);
         addKeywordButton.addEventListener('click', addKeyword);
         deleteLastKeyword.addEventListener('click', deleteKeyword);
+    }
+    
+    function addShipTime() {
+        shipTime.value = shipNum.value + " " + shipSelect.value;
+    }
+    
+    function addBuildTime() {
+        buildTime.value = buildNum.value + " " + buildSelect.value;
     }
     
     //Used for the custom "File Select" input functionality

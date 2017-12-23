@@ -27,6 +27,7 @@ const handlebars = require('express-handlebars').create({
         }
     }
 })
+const mongoose = require('mongoose');
 //Client Sessions automatically encypts the cookies
 const session = require('client-sessions');
 //File Upload Variables
@@ -41,7 +42,9 @@ const multer = require('multer');
 //    }
 //})
 const upload = multer({ dest: 'creator-images/'});
-const routes = require('./app/routes.js');
+var User = require('./models/user.js');
+//Development
+const morgan = require('morgan');
 //Custom modules
 const scooby = require('./lib/scooby.js');
 const getCartContent = require('./lib/cartContent.js');
@@ -72,7 +75,7 @@ app.use(
 //)
 //Gets image, script, styles, and vedor files from /public
 app.use(express.static(__dirname + '/public'));
-
+app.use(morgan('dev'));
 //gets routes
 //app.use('/', router);
 
@@ -87,6 +90,20 @@ function checkSignin(session) {
     }else{
         return true;
     }
+}
+
+mongoose.connect('mongodb://maxschaefer:TheSiteMaker1@ds163836.mlab.com:63836/addifex', function(err){
+    if (err) {
+        console.log(err);
+    }else{
+        console.log('Connect to DB Successful');
+    }
+})
+
+app.post('/create-user', function(req, res){
+    var user = new User();
+    
+    
 }
 
 mongoClient.connect(host, function(err, db){
@@ -209,7 +226,7 @@ mongoClient.connect(host, function(err, db){
                 
                 console.log(result[0]);
                 
-                if (!result) {
+                if (!result[0]) {
                     message = 'Email/Password are incorrect you fucking stupid little bitch';
                 }else{
                     req.session.user = result[0]._id;
@@ -217,7 +234,7 @@ mongoClient.connect(host, function(err, db){
                     message = 'Welcome to Addifex Bitch!!!!!!!!!!!!' + result[0]._id;
                 }
                 
-                res.render('signin', {status: message});
+                res.render('signin', {layout: 'simple.handlebars', status: message});
             })
         })
         
@@ -309,27 +326,29 @@ mongoClient.connect(host, function(err, db){
         })
         
         app.get('/creatorLogin', function(req, res){
-            res.render('creatorLogin', {layout: 'simple.handlebars'});
+            if (!req.session.creator) {
+                res.render('creatorLogin', {layout: 'simple.handlebars'});
+            }else{
+                res.redirect('/dashboard');
+            }
         })
         
         app.post('/creatorLogin', function(req, res){
             var creatorLogin = {email: req.body.email, password: req.body.password};
             
-            db.collection('testCreator').find(creatorLogin).toArray(function(err, result){
+            db.collection('testCreators').find(creatorLogin).toArray(function(err, result){
                 if (err) {
                     console.log(err);
                 }
                 
                 var message;
                 
-                console.log(result);
-                
-                if (!result) {
+                if (!result[0]) {
                     message = 'Email/Password are incorrect you fucking stupid little bitch';
                     
-                    res.render('creatorLogin', {status: message});
+                    res.render('creatorLogin', {layout: 'simple.handlebars', status: message});
                 }else{
-                    req.session.creator = result._id;
+                    req.session.creator = result[0]._id;
                     
                     res.redirect('dashboard');
                 }
@@ -337,7 +356,7 @@ mongoClient.connect(host, function(err, db){
         })
         
         app.get('/creatorLogin-new', function(req, res){
-            res.render('creatorLogin-new', {layout: 'simple.handlebars'});
+            res.render('creatorLogin-new', {layout: 'simple.handlebars', signedIn: checkSignin(req.session.creator)});
         })
         
         app.post('/creatorLogin-new', upload.single('shopImage'), function(req, res, next){
@@ -382,28 +401,77 @@ mongoClient.connect(host, function(err, db){
             })
         })
         
+        
+        //Use a get request parameter that gets all routes with the word 'dashboard' in it. Use reqexp.
+        
+        
         app.get('/dashboard', function(req, res){
-            res.render('dashboard', {layout: 'simple.handlebars'});
+            res.render('dashboard', {layout: 'simple.handlebars', signedIn: checkSignin(req.session.creator)});
         })
         
         app.get('/dashboard-orders', function(req, res){
-            res.render('dashboard-orders', {layout: 'simple.handlebars'});
+            res.render('dashboard-orders', {layout: 'simple.handlebars', signedIn: checkSignin(req.session.creator)});
         })
         
         app.get('/dashboard-products', function(req, res){
-            res.render('dashboard-products', {layout: 'simple.handlebars'});
+            res.render('dashboard-products', {layout: 'simple.handlebars', signedIn: checkSignin(req.session.creator)});
         })
         
         app.get('/dashboard-products-view', function(req, res){
-            res.render('dashboard-products-view', {layout: 'simple.handlebars'});
+            
+            
+            res.render('dashboard-products-view', {layout: 'simple.handlebars', signedIn: checkSignin(req.session.creator)});
         })
         
         app.get('/dashboard-products-new', function(req, res){
-            res.render('dashboard-products-new', {layout: 'simple.handlebars'});
+            res.render('dashboard-products-new', {layout: 'simple.handlebars', signedIn: checkSignin(req.session.creator)});
+        })
+        
+        app.post('/dashboard-products-new', function(req, res){
+            
+            db.collection('testCreators').find(ObjectId(req.session.creator)).toArray(function(err, result){
+                if (err) {
+                    console.log(err);
+                }else{
+                    var shopName = result[0];
+                }
+            })
+            
+            var product = {
+                creatorId: req.session.creator,
+                creatorName: shopName,
+                name: req.body.name,
+                price: req.body.price,
+                shipping: {
+                    cost: req.body.shipCost,
+                    time: req.body.shipTime,
+                },
+                buildTime: req.body.buildTime,
+                description: req.body.description,
+                options: {
+                    colors: req.body.colors,
+                    sizes: req.body.sizes,
+                    other: req.body.other,
+                },
+                category: req.body.category,
+                keywords: req.body.keywords,
+            }
+            
+            db.collection('testProducts').insertOne(product, function(err, result){
+                if (err) {
+                    console.log(err);
+                }else{
+                    console.log(result)
+                    
+                    res.redirect('/dashboard-products-view');
+                }
+            })
+        }, function(req, res){
+            //insert the product id into the creators product array
         })
         
         app.get('/dashboard-sales', function(req, res){
-            res.render('dashboard-sales', {layout: 'simple.handlebars'});
+            res.render('dashboard-sales', {layout: 'simple.handlebars', signedIn: checkSignin(req.session.creator)});
         })
         
         app.get('/dashboard-edit', function(req, res){
@@ -412,13 +480,11 @@ mongoClient.connect(host, function(err, db){
                     if (err) {
                         console.log(err);
                     }else{
-                        console.log(result);
-                        
-                        res.render('dashboard-edit', { creator: result[0], layout: 'simple.handlebars'});
+                        res.render('dashboard-edit', { creator: result[0], layout: 'simple.handlebars', signedIn: checkSignin(req.session.creator)});
                     }
                 })
             }else{
-                res.render('dashboard-edit', {layout: 'simple.handlebars'});
+                res.render('dashboard-edit', {layout: 'simple.handlebars', signedIn: checkSignin(req.session.creator)});
             }
         })
         
@@ -428,13 +494,11 @@ mongoClient.connect(host, function(err, db){
                     if (err) {
                         console.log(err);
                     }else{
-                        console.log(result);
-                        
-                        res.render('dashboard-info', { creator: result[0], layout: 'simple.handlebars'});
+                        res.render('dashboard-info', { creator: result[0], layout: 'simple.handlebars', signedIn: checkSignin(req.session.creator)});
                     }
                 })
             }else{
-                res.render('dashboard-info', {layout: 'simple.handlebars'});
+                res.render('dashboard-info', {layout: 'simple.handlebars', signedIn: checkSignin(req.session.creator)});
             }
         })
         

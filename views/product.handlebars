@@ -9,11 +9,15 @@
     <div class="product_info col-5">
         <ul class="product_info">
             <li class="info" id="name"><strong>{{product.name}}</strong></li>
-            <li class="info" id="creator">Creator: <a href="/shop/{{product.creatorId}}" class="creator_link">leCreator</a></li>
+            <li class="info" id="creator">Creator: <a href="/shop/{{product.creatorId}}" class="creator_link">{{product.creatorName}}</a></li>
             <div class="pricing_group">
                 <li class="info" id="price">Price: <strong>${{product.price}}</strong></li>
-                <li class="info" id="shipping">Shipping: <strong>$8.01</strong></li>
+                <hr>
+                <li class="info" id="shipping">Shipping Cost: <strong>${{product.shipping.cost}}</strong></li>
+                <li class="info" id="shipping">Shipping Time: <strong>{{product.shipping.time}}</strong></li>
             </div>
+            <hr>
+            <li class="info" id="shipping">Build Time: <strong>{{product.buildTime}}</strong></li>
         </ul>
         <!--Blurbs will go in at a later date-->
         <!--<ul class="product_blurb">
@@ -25,9 +29,7 @@
     </div>
     <div class="product_desc col-12">
         <!--Description is maximum 2000 characters long-->
-        <p class="description">
-            Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, met
-        </p>
+        <p class="description">{{product.description}}</p>
     </div>
     <!--The reviews section will go in at a later date-->
     <!--<div class="reviews_title col-12">
@@ -61,22 +63,25 @@
     <div class="rightButton_container col-12">
         <select class="product_select col-12">
             <option>Colors</option>
-            <option>Red</option>
-            <option>Green</option>
-            <option>Blue</option>
+            {{#each product.options.colors}}
+                <option>{{this}}</option>
+            {{/each}}
         </select>
     </div>
     <div class="rightButton_container col-12">
         <select class="product_select col-12">
             <option>Sizes</option>
-            <option>Small</option>
-            <option>Medium</option>
-            <option>Large</option>
+            {{#each product.options.sizes}}
+                <option>{{this}}</option>
+            {{/each}}
         </select>
     </div>
     <div class="rightButton_container col-12">
         <select class="product_select col-12">
             <option>Other Options</option>
+            {{#each product.options.other}}
+                <option>{{this.other}}</option>
+            {{/each}}
         </select>
     </div>
     <div class="rightButton_container col-12">
@@ -100,4 +105,8 @@
             <button class="blue col-12">Visit Shop</button>
         </a>
     </div>
+    <ul class="product_info">
+        <li class="info">Category: {{product.category}}</li>
+        <li class="info">Keywords: {{product.keywords}}</li>
+    </ul>
 </div>
