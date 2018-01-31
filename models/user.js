@@ -4,7 +4,7 @@ var bcrypt = require('bcrypt-nodejs');
 //User schema atrributes
 var UserSchema = new mongoose.Schema({
     name: {type: String, default: ''},
-    email: {type: string, unique: true, lowercase: true},
+    email: {type: String, unique: true, lowercase: true},
     password: String,
     address: {
         line1: String,
@@ -26,7 +26,7 @@ UserSchema.pre('save', function(next){
         if (err) return next(err);
         bcrypt.hash(this.password, salt, null, function(err, hash){
             if (err) return next(err);
-            user.password = hash;
+            this.password = hash;
             next();
         })
     })

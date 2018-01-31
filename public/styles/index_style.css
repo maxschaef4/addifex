@@ -19,6 +19,10 @@
   div.button_container{
     padding: 10px 8.33% 10px 8.33%;
   }
+  
+  .m-hide {display: none;}
+  
+  .m-top-margin {margin-top: 10px;}
 }
 
 @media only screen and (min-width: 426px){
@@ -55,7 +59,7 @@
   .col-11 {width: 91.66%;}
   .col-12 {width: 100%;}
   
-  .hiddable {display: none;}
+  .t-hide {display: none;}
   
   div.button_container{
     padding: 10px 33.33% 10px 33.33%;
@@ -80,7 +84,8 @@
   .col-11 {width: 91.66%;}
   .col-12 {width: 100%;}
   
-  .hiddable {display: none;}
+  .t-hide {display: block;}
+  .d-hide {display: none;}
   
   div.button_container{
     padding: 10px 33.33% 10px 33.33%;
@@ -197,18 +202,18 @@ div.headerButton_container{
 
 button.cart_button{
   border-radius: 0px;
-}
-
-button.cart_button:hover{
   
+  background: url("../images/cart_icon.png") center no-repeat;
+  background-size: 28px 20px;
+  background-color: #5cb85c;
 }
 
 button.account_button{
   border-radius: 0px;
-}
-
-button.account_button:hover{
   
+  background: url("../images/account_icon.png") center no-repeat;
+  background-size: 30px 24px;
+  background-color: #5bc0de;
 }
 
 article{
@@ -223,23 +228,11 @@ div.content_container{
   background-color: #f9f9f9;
 }
 
-div.news_section{
-  border: solid 1px #313131;
-  border-radius: 5px;
-}
-
 div.news_section p{
   line-height: 20px;
 }
 
-div.account_container{
-  padding: 0px 3% 0px 3%;
-}
-
 div.account_section{
-  border: solid 1px #313131;
-  border-radius: 5px;
-  
   padding: 5px 1% 5px 1%;
   text-align: center;
   line-height: 25px;
@@ -258,7 +251,7 @@ div.feed_container button{
 }
 
 div.tabs_container{
-  border-bottom: solid 1px #313131;
+  border-bottom: solid 1px #c7c7c7;
   
   padding-bottom: 3px;
 }
