@@ -4,21 +4,26 @@
   "description": "Test node server for Addifex website.",
   "main": "mongoServer.js",
   "dependencies": {
+    "async": "^2.6.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.17.2",
     "client-sessions": "^0.8.0",
+    "connect-mongo": "^2.0.1",
     "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
+    "express-flash": "0.0.2",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
     "loadtest": "^2.3.0",
     "method-override": "^2.3.9",
-    "mongodb": "^2.2.30",
+    "mongodb": "^2.2.34",
     "mongojs": "^2.4.0",
     "mongoose": "^4.13.7",
     "morgan": "^1.9.0",
     "multer": "^1.3.0",
-    "nodemailer": "^4.0.1"
+    "nodemailer": "^4.0.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^4.0.2",

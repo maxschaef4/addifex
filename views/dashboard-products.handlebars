@@ -34,11 +34,14 @@
         <a href="/dashboard-products-new">
             <button class="red col-12">Add New +</button>
         </a>
+        <center><h3>{{message}}</h3></center>
     </div>
     <a href="/dashboard-products-view">
-        <div class="product_container col-4">
-            <img class="product_image col-12" src="images/battery.jpg"/>
-            <center><h4>Product Name Product Name Product Name</h4></center>
-        </div>
+        {{#each product}}
+            <div class="product_container col-4">
+                <img class="product_image col-12" src="images/battery.jpg"/>
+                <center><h4>{{this.name}}</h4></center>
+            </div>
+        {{/each}}
     </a>
 </div>

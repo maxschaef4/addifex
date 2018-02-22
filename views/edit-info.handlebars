@@ -1,0 +1,23 @@
+{{#section 'head'}}
+    <title>Create Account</title>
+    <link rel="stylesheet" href="/styles/signup_style.css"/>
+    <!--<script src="scripts/signup_controller.js"></script>-->
+{{/section}}
+
+<form id="welcome" class="welcome col-12" action="/account/edit-info" method="post">
+    <center><h2>Create an Account</h2></center>
+    <div class="field_container col-12">
+        <h4>Full Name</h4>
+        <p id="nameError" class="error"></p>
+        <input value="{{user.name}}" id="name" name="name" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>Email</h4>
+        <p id="emailError" class="error"></p>
+        <input value="{{user.email}}" id="email" name="email" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <center><h3 class="error">{{message}}</h3></center>
+    <div class="button_container col-12">
+        <button class="blue col-12" id="update" type="submit">Update</button>
+    </div>
+</form>

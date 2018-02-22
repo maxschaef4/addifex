@@ -1,7 +1,7 @@
 {{#section 'head'}}
     <title>Create Account</title>
     <link rel="stylesheet" href="styles/signup_style.css"/>
-    <script src="scripts/signup_controller.js"></script>
+    <!--<script src="scripts/signup_controller.js"></script>-->
 {{/section}}
 
 <form id="welcome" class="welcome col-12" action="/signup" method="post">
@@ -31,8 +31,9 @@
         <p id="confirmError" class="error"></p>
         <input id="confirm" name="confirmPassword" class="text_field col-12" type="password" size="50"/>
     </div>
+    <center><h3 class="error">{{message}}</h3></center>
     <div class="button_container col-12">
-        <button class="blue col-12" id="signup" type="submit" disabled="true">Sign Up</button>
+        <button class="blue col-12" id="signup" type="submit">Sign Up</button>
     </div>
     <center><p>By signing up, you agree to our <a href="terms.html">Terms & Conditions</a></p></center>
 </form>

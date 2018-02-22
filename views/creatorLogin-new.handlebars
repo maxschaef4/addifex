@@ -3,12 +3,13 @@
     <title>Open Shop</title>
 {{/section}}
 
-<form id="newShop" class="col-12" action="/creatorLogin-new" method="post" enctype="multipart/form-data">
+<form id="newShop" class="col-12" action="/creatorLogin-new" method="post">
     <center><h2>Personal Information</h2></center>
+    <center><p class="error">{{message}}</p></center>
     <div class="field_container col-12">
         <h4>Full Name</h4>
         <p id="fullNameError" class="error"></p>
-        <input id="fullName" name="fullName" class="text_field col-12" type="text" size="50"/>
+        <input id="fullName" name="name" class="text_field col-12" type="text" size="50"/>
     </div>
     <div class="field_container col-12">
         <h4>Email</h4>
@@ -21,9 +22,14 @@
         <input id="password" name="password" class="text_field col-12" type="password" size="50"/>
     </div>
     <div class="field_container col-12">
-        <h4>Address</h4>
+        <h4>Address Line 1</h4>
         <p id="addressError" class="error"></p>
-        <input id="address" name="address" class="text_field col-12" type="text" size="50"/>
+        <input id="address" name="line1" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>Address Line 2</h4>
+        <p id="addressError" class="error"></p>
+        <input id="address" name="line2" class="text_field col-12" type="text" size="50"/>
     </div>
     <div class="field_container col-12">
         <h4>City</h4>
@@ -50,10 +56,10 @@
         <input id="shopName" name="shopName" class="text_field col-12" type="text"/>
     </div>
     <div class="field_container col-12">
-        <h4>Shop Description</h4>
+        <h4>About Shop</h4>
         <p>*This describes who you and your shop are. You can include personal and shop history, the products you make, your mission statement, etc.</p>
         <p id="descriptionError" class="error"></p>
-        <textarea name="description" class="col-12"></textarea>
+        <textarea name="about" class="col-12"></textarea>
     </div>
     <div class="field_container col-12">
         <h4>Shop Image</h4>
@@ -82,9 +88,9 @@
         <p>*Keywords are used to help people search for your shop. You can add up to 10 keywords.</p>
         <p id="keywordsError" class="error"></p>
         <input id="keywords" name="keywords" class="text_field col-4" type="text"/>
-        <button id="addKeyword" class="addKeyword_button green col-1">+</button>
+        <button id="addKeyword" type="button" class="addKeyword_button green col-1">+</button>
     </div>
     <div class="button_container col-12">
-        <button class="blue col-12" id="signup">Open Shop</button>
+        <button class="blue col-12" type="submit" id="signup">Open Shop</button>
     </div>
 </form>

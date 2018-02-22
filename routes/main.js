@@ -1,7 +1,10 @@
 var router = require('express').Router();
+var Product = require('../models/product');
 
 router.get('/', function(req, res){
-    res.render('index');
+    Product.find({}, function(err, result){
+        res.render('index', {product: result});
+    })
 })
 
 router.get('/about', function(req, res){

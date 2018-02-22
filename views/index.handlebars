@@ -7,21 +7,21 @@
 <div class="banner_container col-12">
     <div class="account_container col-3">
         <div class="account_section col-12">
-            {{#if signedIn}}
-            <h4>Cart</h4>
-            <p>Cart Contains: {{cart}} Items</p>
-            <div class="button_container col-12">
-                <a href="/cart">
-                    <button class="green col-12">My Cart</button>
-                </a>
-            </div>
-            <h4>Account</h4>
-            <a href="notifications">You have <span>0</span> notifications</a>
-            <div class="button_container col-12">
-                <a href="/account">
-                    <button class="blue col-12">My Account</button>
-                </a>
-            </div>
+            {{#if user}}
+                <h4>Cart</h4>
+                <p>Cart Contains: {{cart}} Items</p>
+                <div class="button_container col-12">
+                    <a href="/cart">
+                        <button class="green col-12">My Cart</button>
+                    </a>
+                </div>
+                <h4>Account</h4>
+                <a href="notifications">You have <span>0</span> notifications</a>
+                <div class="button_container col-12">
+                    <a href="/account">
+                        <button class="blue col-12">My Account</button>
+                    </a>
+                </div>
             {{else}}
                 {{> signIn}}
                 <!--<h4>Sign In!</h4>
@@ -52,7 +52,7 @@
         <button class="green col-2" id="popularButton">Popular</button>
         <button class="blue col-2" id="newestButton">Newest</button>
     </div>
-    {{#each products}}
+    {{#each product}}
         <a href="product/{{this._id}}">
             <div class="product_container col-3" id="productCell">
                 <img src="../images/battery.jpg" class="product col-12">

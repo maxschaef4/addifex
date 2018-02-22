@@ -1,12 +1,13 @@
 var router = require('express').Router();
-var User = require('../models/user')
-var cookieSession = require('cookie-session');
+var User = require('../models/user');
+var passport = require('passport');
+var passportConfig = require('../config/passport');
 
 router.get('/signup', function(req, res){
-    res.render('signup', {layout: 'simple.handlebars'});
+    res.render('signup', {layout: 'simple.handlebars', message: req.flash('signup')});
 })
 
-router.post('/signup', function(req, res){
+router.post('/signup', function(req, res, next){
     var user = new User();
     
     user.name = req.body.name;
@@ -14,44 +15,72 @@ router.post('/signup', function(req, res){
     user.password = req.body.password;
     
     User.findOne({email: req.body.email}, function(err, existingUser){
+        if (err) return next(err);
+        
         if (existingUser) {
-            console.log('User exists!!');
-            
+            req.flash('signup', 'Account with that email already exists');
             return res.redirect('/signup');
         }else{
             user.save(function(err, user){
                 if (err) return next(err);
                 
-                res.json('User has been created');
+                req.logIn(user, function(err){
+                    if (err) return next(err);
+                    res.redirect('/account');
+                })
             })
         }
     })
 })
 
 router.get('/signin', function(req, res){
-    res.render('signin', {status: '', layout: 'simple.handlebars'});
+    res.render('signin', {layout: 'simple.handlebars', message: req.flash('success')});
 })
 
-//router.get('/account', function(req, res){
-//    var message = '';
-//    
-//    if (!req.session.user) {
-//        message = 'Please sign in!';
-//        res.render('account', {status: message});
-//    }else{
-//        db.collection('testCreator').find(ObjectId(req.session.user)).toArray(function(err, result){
-//            if (err) {
-//                console.log(err);
-//            }else{
-//                console.log(result[0]);
-//                
-//                message = 'Welcome ' + result[0].name + '!';
-//                
-//                res.render('account', {signedIn: checkSignin(req.session.user), creator: result[0]});
-//            }
-//        })
-//    }
-//})
+router.post('/signin', passport.authenticate('user', {
+    successRedirect: '/account',
+    failureRedirect: '/signin',
+    failureFlash: true
+}))
+
+router.get('/account', function(req, res){
+    if (!req.user) {
+        res.render('account');
+    }else{
+        User.findOne({_id: req.user._id}, function(err, user){
+            res.render('account', {user: user});
+        })
+    }
+})
+
+router.get('/account/edit-info', function(req, res){
+    res.render('edit-info', {layout: 'simple.handlebars', message: req.flash('success')});
+})
+
+router.post('/account/edit-info', function(req, res, next){
+    User.findOne({_id: req.user._id}, function(err, user){
+        if (err) return next(err);
+        
+        if (!user) {
+            req.flash('success', 'Problem updating your account');
+            return next();
+        }
+        
+        if (req.body.name) user.name = req.body.name;
+        if (req.body.email) user.email = req.body.email;
+        
+        user.save(function (err){
+            if (err) return next(err);
+            req.flash('success', 'Account has been updated');
+            return res.redirect('/account');
+        })
+    })
+})
+
+router.get('/signout', function(req, res){
+    req.logout();
+    res.redirect('/');
+})
         
 router.get('/notifications', function(req, res){
     res.render('notifications');

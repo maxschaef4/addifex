@@ -1,18 +1,11 @@
-//Connecting to MongoDB cluster1
-const mongoClient = require('mongodb').MongoClient;
-//Gives me access to the auto-generated id for being able to find users by id
-const ObjectId = require('mongodb').ObjectID;
-const assert = require('assert');
-//Used for MongoDB Atlas--Add later
-//var uri = "mongodb://maxwell-schaefer:Cluster1Passwrd@cluster1-shard-00-00-gagz1.mongodb.net:27017,cluster1-shard-00-01-gagz1.mongodb.net:27017,cluster1-shard-00-02-gagz1.mongodb.net:27017/Addifex?ssl=true&replicaSet=Cluster1-shard-0&authSource=admin";
-const host = 'mongodb://localhost:27017/test';
-//Getting and starting express on port 8081
+//Author: Maxwell Schaefer
+//Date: 2/7/2018
+
+
 const express = require('express');
 const app = express();
-const port = process.env.port || 8081;
-//Used for overriding HTTP verbs...specifically for delete and put methods
-const methodOverride = require('method-override');
-//Handlebars support
+const mongoose = require('mongoose');
+////Handlebars support
 const handlebars = require('express-handlebars').create({
     //Defines the name of the default layout file
     defaultLayout: 'main',
@@ -27,56 +20,64 @@ const handlebars = require('express-handlebars').create({
         }
     }
 })
-const mongoose = require('mongoose');
-//Client Sessions automatically encypts the cookies
-const session = require('client-sessions');
-//File Upload Variables
-const fs = require('fs');
-const multer = require('multer');
-//var storage = multer.diskStorage({
-//    destination: function(req, file, cb){
-//        cb(null, '/public/product-photos/');
-//    },
-//    filename: function(req, file, cb){
-//        cb(null, file.originalname);
-//    }
-//})
-const upload = multer({ dest: 'creator-images/'});
-var User = require('./models/user.js');
+
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
+var flash = require('express-flash');
+const mongoStore = require('connect-mongo')(session);
+const passport = require('passport');
 //Development
 const morgan = require('morgan');
 //Custom modules
 const scooby = require('./lib/scooby.js');
 const getCartContent = require('./lib/cartContent.js');
 
-// override with different headers; last one takes precedence
-app.use(methodOverride('_method'));
-//Using body-parser middleware
-app.use(require('body-parser').urlencoded({extended: true}));
-app.engine('handlebars', handlebars.engine);
-app.set('view engine', 'handlebars');
-//cookie for storing the user session
-app.use(
-    session({
-        cookieName: 'session',
-        secret: 'I guess a random string goes here',
-        duration: 24 * 60 * 60 * 1000,
-        activeDuration: 60 * 60 * 1000,
-    })
-)
-
-//Gets image, script, styles, and vedor files from /public
-app.use(express.static(__dirname + '/public'));
-app.use(morgan('dev'));
+var secret = require('./config/secret.js');
+//var User = require('./models/user.js');
 
 //gets routes
 var mainRoutes = require('./routes/main');
 var userRoutes = require('./routes/user');
+var creatorRoutes = require('./routes/creator');
+var productRoutes = require('./routes/product');
+var adminRoutes = require('./routes/admin');
 
+//Using body-parser middleware
+//Gets image, script, styles, and vendor files from /public
+app.use(express.static(__dirname + '/public'));
+app.use(cookieParser());
+app.use(require('body-parser').urlencoded({extended: true}));
+app.use(session({
+    resave: true,
+    saveUninitialized: true,
+    secret: secret.secretKey,
+    store: new mongoStore({url: secret.database, autoReconnect: true})
+}))
+app.use(morgan('dev'));
+app.use(flash());
+app.use(passport.initialize());
+app.use(passport.session());
+//allows user to be accessed by all routes
+app.use(function(req, res, next){
+    res.locals.user = req.user;
+    next();
+})
+
+app.use(function(req, res, next){
+    res.locals.creator = req.creator;
+    next();
+})
+//Uses the routes middleware
 app.use(mainRoutes);
 app.use(userRoutes);
+app.use(creatorRoutes);
+app.use(productRoutes);
+app.use('/admin', adminRoutes);
 
-mongoose.connect('mongodb://maxschaefer:TheSiteMaker1@ds163836.mlab.com:63836/addifex', function(err){
+app.engine('handlebars', handlebars.engine);
+app.set('view engine', 'handlebars');
+
+mongoose.connect(secret.database, function(err){
     if (err) {
         console.log(err);
     }else{
@@ -84,12 +85,20 @@ mongoose.connect('mongodb://maxschaefer:TheSiteMaker1@ds163836.mlab.com:63836/ad
     }
 })
 
-app.listen('3000', function(err){
+mongoose.Promise = global.Promise;
+
+//Get the default connection
+var db = mongoose.connection;
+
+//Bind connection to error event (to get notification of connection errors)
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+app.listen(secret.port, function(err){
     if (err) {
         throw err;
     }
     
-    console.log('Server running on ::3000')
+    console.log('Server running on ::' + secret.port);
 })
 
 //mongoClient.connect(host, function(err, db){
