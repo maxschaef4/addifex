@@ -28,18 +28,14 @@
         </a>
     </ul>
 </div>
-{{#if creator}}
-    <div class="rightSection_container col-9">
-        <h2>Creator Dashboard</h2>
-        <center><h3>Notifications</h3></center>
-        <div class="notification col-12">
-            <div class="text_container col-12">
-                <h4>Welcome to Addifex, {{creator.name}}</h4>
-                <p id="notificationInfo">Thank you for opening a creator account.</p>
-                <a href="#" class="delete_link">Delete</a>
-            </div>
+<div class="rightSection_container col-9">
+    <h2>Creator Dashboard</h2>
+    <center><h3>Notifications</h3></center>
+    <div class="notification col-12">
+        <div class="text_container col-12">
+            <h4>Welcome to Addifex, {{creator.name}}</h4>
+            <p id="notificationInfo">Thank you for opening a creator account.</p>
+            <a href="#" class="delete_link">Delete</a>
         </div>
     </div>
-{{else}}
-    <center><h3>Please sign in or create and account</h3></center>
-{{/if}}
+</div>

@@ -1,35 +1,35 @@
 {{#section 'head'}}
-    <link rel="stylesheet" href="styles/dashboard-products-new_style.css" type="text/css"/>
-    <title>New Product</title>
+    <link rel="stylesheet" href="../styles/dashboard-products-new_style.css" type="text/css"/>
+    <title>Edit Product</title>
     <script src="../scripts/dashboard-products-new_controller.js"></script>
 {{/section}}
 
 <div class="sideButtons_container col-3">
     <ul>
-        <a href="/dashboard-products">
-            <li class="side_button col-12">Back to Products</li>
+        <a href="/dashboard-products-view/{{product._id}}">
+            <li class="side_button col-12">Back to Product</li>
         </a>
     </ul>
 </div>
-<form action="/dashboard-products-new" method="post" class="rightSection_container col-11">
+<form action="/dashboard-products-edit/{{product._id}}" method="post" class="rightSection_container col-11">
     <center><h3>New Product</h3></center>
     <div class="field_container col-12">
         <h4>Product Name</h4>
         <p>*</p>
-        <p id="productNameError" class="error"></p>
-        <input id="name" name="name" class="text_field col-12" type="text"/>
+        <p id="nameError" class="error"></p>
+        <input id="name" value="{{product.name}}" name="name" class="text_field col-12" type="text"/>
     </div>
     <div class="field_container col-12">
         <h4>Price</h4>
         <p>*</p>
         <p id="priceError" class="error"></p>
-        <input id="price" name="price" class="text_field col-12" type="text"/>
+        <input id="price" value="{{product.price}}" name="price" class="text_field col-12" type="text"/>
     </div>
     <div class="field_container col-12">
         <h4>Shipping Cost</h4>
         <p>*</p>
         <p id="shippingError" class="error"></p>
-        <input id="shipping" name="shipCost" class="text_field col-12" type="text"/>
+        <input id="shipping" value="{{product.shipping.cost}}" name="shipCost" class="text_field col-12" type="text"/>
     </div>
     <div class="field_container col-12">
         <h4>Shipping Time</h4>
@@ -41,19 +41,15 @@
             <option>Week(s)</option>
             <option>Month(s)</option>
         </select>
-        <input name="shipTime" id="shipTime" value="" type="hidden"/>
+        <input name="shipTime" id="shipTime" value="{{product.shipping.time}}" type="hidden"/>
     </div>
     <div class="field_container col-12">
         <h4>Description</h4>
         <p>*</p>
         <p id="description" class="error"></p>
-        <textarea  name="description" class="col-12"></textarea>
+        <textarea  name="description" class="col-12">{{product.description}}</textarea>
     </div>
     <div class="field_container col-12">
-        <div class="radio_container col-12">
-            <label for="noTime"><h4>Made By Order:</h4></label>
-            <input id="noTime" name="mbo" type="checkbox">
-        </div>
         <p>*</p>
         <h4>Build Time</h4>
         <p id="timeError" class="error"></p>
@@ -64,7 +60,7 @@
             <option>Week(s)</option>
             <option>Month(s)</option>
         </select>
-        <input type="hidden" id="buildTime" value="" name="buildTime"/>
+        <input type="hidden" id="buildTime" value="{{product.buildTime}}" name="buildTime"/>
     </div>
     <div class="field_container col-12">
         <h4>Images</h4>
@@ -84,24 +80,36 @@
                 <h4>Colors:</h4>
                 <input type="text" id="newColor" class="text_field col-10">
                 <button id="addColor" class="red col-2" type="button">+</button>
-                <input type="hidden" id="colors" name="colors" value=""/>
-                <ul id="colorsAdded" class="options_list col-12"></ul>
+                <input type="hidden" id="colors" name="colors" value="{{product.options.colors}}"/>
+                <ul id="colorsAdded" class="options_list col-12">
+                    {{#each product.options.colors}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
                 <button id="deleteLastColor" type="button" class="red col-12">Delete Last</button>
             </div>
             <div class="option_container col-4">
                 <h4>Sizes:</h4>
                 <input type="text" id="newSize" class="text_field col-10">
                 <button id="addSize" class="green col-2" type="button">+</button>
-                <input type="hidden" id="sizes" name="sizes" value=""/>
-                <ul id="sizesAdded" class="options_list col-12"></ul>
+                <input type="hidden" id="sizes" name="sizes" value="{{product.options.sizes}}"/>
+                <ul id="sizesAdded" class="options_list col-12">
+                    {{#each product.options.sizes}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
                 <button id="deleteLastSize" type="button" class="green col-12">Delete Last</button>
             </div>
             <div class="option_container col-4">
                 <h4>Other Options:</h4>
                 <input type="text" id="newOther" class="text_field col-10">
                 <button id="addOther" class="blue col-2" type="button">+</button>
-                <input type="hidden" id="other" name="others" value=""/>
-                <ul id="otherAdded" class="options_list col-12"></ul>
+                <input type="hidden" id="other" name="others" value="{{product.options.colors}}"/>
+                <ul id="otherAdded" class="options_list col-12">
+                    {{#each product.options.others}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
                 <button id="deleteLastOther" type="button" class="blue col-12">Delete Last</button>
             </div>
         </div>
@@ -111,7 +119,8 @@
         <p>*</p>
         <p id="categoryError" class="error"></p>
         <select id="category" name="category" class="col-4">
-            <option>Select Category</option>
+            <option>{{product.category}}</option>
+            <option>------------</option>
             <option>Electronics</option>
             <option>Home & Auto</option>
             <option>Gadgets</option>
@@ -124,14 +133,15 @@
         <input id="newKeyword" class="text_field col-10" type="text"/>
         <button id="addKeyword" class="red col-2" type="button">+</button>
         <input id="keywords" name="keywords" type="hidden" value=""/>
-        <ul id="keywordsAdded" class="options_list col-12"></ul>
+        <ul id="keywordsAdded" class="options_list col-12">
+            {{#each product.keywords}}
+                <li>{{this}}</li>
+            {{/each}}
+        </ul>
         <button id="deleteLastKeyword" class="red col-12" type="button">Delete Last</button>
     </div>
     <div class="button_container col-12">
-        <button class="green col-12">Save</button>
-    </div>
-    <div class="button_container col-12">
-        <button type="submit" class="blue col-12">Upload</button>
+        <button type="submit" class="blue col-12">Update</button>
     </div>
 </form>
 </div>

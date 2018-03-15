@@ -63,10 +63,6 @@ app.use(function(req, res, next){
     next();
 })
 
-app.use(function(req, res, next){
-    res.locals.creator = req.creator;
-    next();
-})
 //Uses the routes middleware
 app.use(mainRoutes);
 app.use(userRoutes);

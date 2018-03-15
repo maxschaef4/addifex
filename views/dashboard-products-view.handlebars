@@ -1,5 +1,5 @@
 {{#section 'head'}}
-    <link rel="stylesheet" href="styles/dashboard-products-view_style.css" type="text/css"/>
+    <link rel="stylesheet" href="../styles/dashboard-products-view_style.css" type="text/css"/>
     <title>{{product.name}}</title>
 {{/section}}
 
@@ -14,25 +14,43 @@
     <div class="productInfo_container col-9">
         <img class="col-5" src="../images/battery.jpg"/>
         <ul class="col-7">
-            <li><h3>Product Name</h3></li>
-            <li><p>Price: $0.00</p></li>
-            <li><p>Shipping: $0.00</p></li>
-            <li><p>Build Time: 1 Day</p></li>
+            <li><h3>{{product.name}}</h3></li>
+            <li><p>Price: ${{product.price}}</p></li>
+            <li><p>Shipping Cost: ${{product.shipping.cost}}</p></li>
+            <li><p>Shipping Time: {{product.shipping.time}}</p></li>
+            <li><p>Build Time: {{product.buildTime}}</p></li>
         </ul>
         <div class="productDesc_container col-12">
-            <p class="description">
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna. Sed consequat, leo eget bibendum sodales, augue velit cursus nunc, quis gravida magna mi a libero. Fusce vulputate eleifend sapien. Vestibulum purus quam, scelerisque ut, mollis sed, nonummy id, met
-            </p>
+            <p class="description">{{product.description}}</p>
         </div>
         <div class="category_container col-12">
-            <h3>Category: --------</h3>
+            <h3>Category: {{product.category}}</h3>
         </div>
         <div class="keywords_container col-12">
-            <p>Keywords:</p>
+            <p>Keywords: {{product.keywords}}</p>
+        </div>
+        <div class="keywords_container col-12">
+            <h3>Options</h3>
+            <h4>Colors:</h4>
+            {{#each product.options.colors}}
+                <p>{{this}}</p>
+            {{/each}}
+            <h4>Sizes:</h4>
+            {{#each product.options.sizes}}
+                <p>{{this}}</p>
+            {{/each}}
+            <h4>Others:</h4>
+            {{#each product.options.others}}
+                <p>{{this}}</p>
+            {{/each}}
         </div>
     </div>
     <div class="rightAside_container col-3">
-        <button class="red col-12">Edit</button>
-        <button class="red col-12">View</button>
+        <a href="/dashboard-products-edit/{{product._id}}">
+            <button type="button" class="red col-12">Edit</button>
+        </a>
+        <a href="/product/{{product._id}}">
+            <button type="button" class="red col-12">View</button>
+        </a>
     </div>
 </div>

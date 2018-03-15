@@ -59,15 +59,33 @@ router.post('/creatorLogin', passport.authenticate('creator', {
     failureFlash: true
 }))
 
-router.get('/dashboard', function(req, res){
+router.get('/dashboard', function(req, res, next){
     if (!req.user) {
-        res.render('dashboard', {layout: 'simple.handlebars', creator: null});
+        res.redirect('/creatorLogin');
     }else{
         Creator.findOne({_id: req.user._id}, function(err, creator){
-            console.log(creator._id);
-            res.render('dashboard', {layout: 'simple.handlebars', creator: creator});
+            if (!creator) {
+                res.status('403').json("You do not have permission");
+                return next();
+            }else{
+                res.render('dashboard', {layout: 'simple.handlebars', creator: creator});
+            }
         })
     }
+})
+
+router.get('/dashboard-info', function(req, res){
+    res.render('dashboard-info', {layout: 'simple.handlebars'});
+})
+
+
+
+router.get('/dashboard-edit', function(req, res){
+    res.render('dashboard-edit', {layout: 'simple.handlebars'});
+})
+
+router.get('/dashboard-help', function(req, res){
+    res.render('dashboard-help', {layout: 'simple.handlebars'});
 })
 
 module.exports = router;

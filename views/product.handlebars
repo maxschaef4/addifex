@@ -9,7 +9,7 @@
     <div class="product_info col-5">
         <ul class="product_info">
             <li class="info" id="name"><strong>{{product.name}}</strong></li>
-            <li class="info" id="creator">Creator: <a href="/shop/{{product.creatorId}}" class="creator_link">{{product.creatorName}}</a></li>
+            <li class="info" id="creator">Creator: <a href="/shop/{{product.creatorId}}" class="creator_link">{{creator.shopName}}</a></li>
             <div class="pricing_group">
                 <li class="info" id="price">Price: <strong>${{product.price}}</strong></li>
                 <hr>
@@ -79,8 +79,8 @@
     <div class="rightButton_container col-12">
         <select class="product_select col-12">
             <option>Other Options</option>
-            {{#each product.options.other}}
-                <option>{{this.other}}</option>
+            {{#each product.options.others}}
+                <option>{{this}}</option>
             {{/each}}
         </select>
     </div>
@@ -99,9 +99,9 @@
         <p><a class="ratings_link">16 Reviews</a></p>
     </div>-->
     <div class="shop_container col-12">
-        <p class="more_from">More from leCreator</p>
+        <p class="more_from">More from {{creator.shopName}}</p>
         <img class="creator_image" src="../images/battery.jpg"/>
-        <a href="shop.html">
+        <a href="../shop/{{creator.shopName}}">
             <button class="blue col-12">Visit Shop</button>
         </a>
     </div>

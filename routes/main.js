@@ -1,9 +1,18 @@
 var router = require('express').Router();
 var Product = require('../models/product');
+var passport = require('passport');
 
 router.get('/', function(req, res){
     Product.find({}, function(err, result){
-        res.render('index', {product: result});
+        if (!req.user) {
+            res.render('index', {product: result, user: null});
+        }else{
+            if (req.user.type != 'user') {
+                res.render('index', {product: result, user: null});
+            }else{
+                res.render('index', {product: result, user: req.user});
+            }
+        }
     })
 })
 

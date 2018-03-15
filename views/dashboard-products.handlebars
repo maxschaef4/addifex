@@ -36,12 +36,12 @@
         </a>
         <center><h3>{{message}}</h3></center>
     </div>
-    <a href="/dashboard-products-view">
-        {{#each product}}
+    {{#each product}}
+        <a href="/dashboard-products-view/{{this._id}}">
             <div class="product_container col-4">
                 <img class="product_image col-12" src="images/battery.jpg"/>
                 <center><h4>{{this.name}}</h4></center>
             </div>
-        {{/each}}
-    </a>
+        </a>
+    {{/each}}
 </div>
