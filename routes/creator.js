@@ -1,7 +1,6 @@
 var router = require('express').Router();
 var Creator = require('../models/creator');
 var passport = require('passport');
-var passportConfig = require('../config/passportCreator');
 
 router.get('/creatorLogin-new', function(req, res){
     res.render('creatorLogin-new', {layout: 'simple.handlebars', message: req.flash('success')});
@@ -77,8 +76,6 @@ router.get('/dashboard', function(req, res, next){
 router.get('/dashboard-info', function(req, res){
     res.render('dashboard-info', {layout: 'simple.handlebars'});
 })
-
-
 
 router.get('/dashboard-edit', function(req, res){
     res.render('dashboard-edit', {layout: 'simple.handlebars'});

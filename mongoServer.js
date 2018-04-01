@@ -1,7 +1,6 @@
 //Author: Maxwell Schaefer
 //Date: 2/7/2018
 
-
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
@@ -33,7 +32,10 @@ const scooby = require('./lib/scooby.js');
 const getCartContent = require('./lib/cartContent.js');
 
 var secret = require('./config/secret.js');
+
+//Models
 //var User = require('./models/user.js');
+var Cart = require('./models/cart.js');
 
 //gets routes
 var mainRoutes = require('./routes/main');
@@ -41,6 +43,9 @@ var userRoutes = require('./routes/user');
 var creatorRoutes = require('./routes/creator');
 var productRoutes = require('./routes/product');
 var adminRoutes = require('./routes/admin');
+
+//Custom Middleware
+var cartMw = require('./mw/cart');
 
 //Using body-parser middleware
 //Gets image, script, styles, and vendor files from /public
@@ -57,9 +62,19 @@ app.use(morgan('dev'));
 app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
+
 //allows user to be accessed by all routes
 app.use(function(req, res, next){
-    res.locals.user = req.user;
+    if (req.user) {
+        res.locals.user = req.user._id;
+    }else{
+        res.locals.user = null;
+    }
+    next();
+})
+
+app.use(function(req, res, next){
+    console.log(res.locals);
     next();
 })
 
@@ -69,6 +84,8 @@ app.use(userRoutes);
 app.use(creatorRoutes);
 app.use(productRoutes);
 app.use('/admin', adminRoutes);
+
+app.use(cartMw);
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');

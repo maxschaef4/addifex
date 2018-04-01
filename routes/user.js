@@ -1,27 +1,43 @@
 var router = require('express').Router();
 var User = require('../models/user');
+var Cart = require('../models/cart');
 var passport = require('passport');
 var passportConfig = require('../config/passport');
+var async = require('async');
 
 router.get('/signup', function(req, res){
     res.render('signup', {layout: 'simple.handlebars', message: req.flash('signup')});
 })
 
 router.post('/signup', function(req, res, next){
-    var user = new User();
     
-    user.name = req.body.name;
-    user.email = req.body.email;
-    user.password = req.body.password;
-    
-    User.findOne({email: req.body.email}, function(err, existingUser){
-        if (err) return next(err);
-        
-        if (existingUser) {
-            req.flash('signup', 'Account with that email already exists');
-            return res.redirect('/signup');
-        }else{
-            user.save(function(err, user){
+    async.waterfall([
+        function (callback) {
+            var user = new User();
+            
+            user.name = req.body.name;
+            user.email = req.body.email;
+            user.password = req.body.password;
+            
+            User.findOne({email: req.body.email}, function(err, existingUser){
+                if (err) return next(err);
+                
+                if (existingUser) {
+                    req.flash('signup', 'Account with that email already exists');
+                    return res.redirect('/signup');
+                }else{
+                    user.save(function(err, user){
+                        if (err) return next(err);
+                        callback(null, user);
+                    })
+                }
+            })
+        },
+        function (user) {
+            var cart = new Cart();
+            
+            cart.buyer = user._id;
+            cart.save(function(err){
                 if (err) return next(err);
                 
                 req.logIn(user, function(err){
@@ -30,7 +46,7 @@ router.post('/signup', function(req, res, next){
                 })
             })
         }
-    })
+    ])
 })
 
 router.get('/signin', function(req, res){

@@ -7,12 +7,12 @@
 <div class="cartInfo_container col-12">
     <h3>My Cart</h3>
     <ul>
-        <li>Total: $100.00</li>
-        <li>Items: {{cart}}</li>
+        <li>Total: ${{cart.total}}</li>
+        <li>Items: {{cart.items}}</li>
     </ul>
 </div>
 <center><h3>{{message}}</h3></center>
-{{#each products}}
+{{#each cart.products}}
     <div class="item col-12">
         <a href="/product/{{this._id}}">
             <img src="../images/battery.jpg" class="col-2"/>
@@ -25,7 +25,7 @@
             </ul>
             <form>
                 <p>Quantity</p>
-                <input type="text" value="1" id="quantity"/>
+                <input type="text" value="{{this.quantity}}" id="quantity"/>
             </form>
             <form action="/cart" method="post">
                 <button type="submit" class="red col-2">Remove</button>
@@ -35,7 +35,7 @@
     </div>
 {{/each}}
 <div class="cartInfo_container col-12">
-    {{#if signedIn}}
+    {{#if user}}
         <div class="button_container col-12">
             <a href="/checkout">
                 <button class="green col-12">Checkout</button>

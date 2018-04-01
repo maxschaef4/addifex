@@ -2,6 +2,7 @@ var router = require('express').Router();
 var mongoose = require('mongoose');
 var Creator = require('../models/creator');
 var Product = require('../models/product');
+var Cart = require('../models/cart');
 var async = require('async');
 
 router.get('/product/:id', function(req, res, next){
@@ -24,6 +25,36 @@ router.get('/product/:id', function(req, res, next){
             })
         })
     }
+})
+
+router.post('/product/:id', function(req, res, next){
+    Cart.findOne({buyer: req.user._id}, function(err, cart){
+        if (err) return next(err);
+        
+        if (!cart) {
+            return res.redirect('/product/' + req.params.id);
+        }
+        
+        cart.products.push({
+            product: req.body.productId,
+            name: req.body.name,
+            price: parseFloat(req.body.price),
+            shippingCost: parseFloat(req.body.shippingCost),
+            color: req.body.color,
+            size: req.body.size,
+            other: req.body.other,
+            creator: req.body.creatorId
+        })
+        
+        cart.total = (cart.total + parseFloat(req.body.price)).toFixed(2);
+        cart.items++;
+        
+        cart.save(function(err){
+            if (err) return next(err);
+            
+            return res.redirect('/product/' + req.params.id);
+        })
+    })
 })
 
 router.get('/shop/:name', function(req, res){
@@ -140,14 +171,14 @@ router.post('/dashboard-products-edit/:id', function(req, res, next){
     Product.find({'_id': req.params.id}, function(err, product){
         
         if (req.body.name) product[0].name = req.body.name;
-        if (req.body.price) product[0].email = req.body.price;
+        if (req.body.price) product[0].price = req.body.price;
         if (req.body.shipCost) product[0].shipping.cost = req.body.shipCost;
-        if (req.body.shipTime) product[0].shipping.time = req.body.shiptime;
+        if (req.body.shipTime) product[0].shipping.time = req.body.shipTime;
         if (req.body.description) product[0].description = req.body.description;
         if (req.body.buildTime) product[0].buildTime = req.body.buildTime;
         if (req.body.colors) product[0].options.colors = req.body.colors;
         if (req.body.sizes) product[0].options.sizes = req.body.sizes;
-        if (req.body.other) product[0].options.others = req.body.other;
+        if (req.body.others) product[0].options.others = req.body.others;
         if (req.body.category) product[0].category = req.body.category;
         if (req.body.keywords) product[0].keywords = req.body.keywords;
         
