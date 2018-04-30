@@ -52,5 +52,8 @@
         <a href="/product/{{product._id}}">
             <button type="button" class="red col-12">View</button>
         </a>
+        <form action="/dashboard-products-view/{{product._id}}" method="post">
+            <button type="submit" class="red col-12">Delete</button>
+        </form>
     </div>
 </div>

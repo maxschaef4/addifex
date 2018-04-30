@@ -232,6 +232,24 @@ div.content_container{
   background-color: #f9f9f9;
 }
 
+div.notice{
+  padding: 10px 20px 10px 20px;
+}
+
+div.red{
+  margin: 10px 0px 0px 0px;
+  
+  border: solid;
+  border-color: #d9534f;
+  border-radius: 5px;
+  
+  background-color: #f9f9f9;
+  
+  font-family: sans-serif;
+  font-weight: 600;
+  color: #d9534f;
+}
+
 div.cartInfo_container{
   border: solid 2px #313131;
   border-radius: 5px;

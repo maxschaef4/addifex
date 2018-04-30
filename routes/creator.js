@@ -1,6 +1,7 @@
 var router = require('express').Router();
 var Creator = require('../models/creator');
 var passport = require('passport');
+var fs = require('fs');
 
 router.get('/creatorLogin-new', function(req, res){
     res.render('creatorLogin-new', {layout: 'simple.handlebars', message: req.flash('success')});
@@ -31,9 +32,15 @@ router.post('/creatorLogin-new', function(req, res, next){
             creator.save(function(err, creator){
                 if (err) return next(err);
                 
-                req.logIn(creator, function(err){
+                var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/public/tmp/' + creator._id;
+                
+                fs.mkdir(path, function(err){
                     if (err) return next(err);
-                    res.redirect('/dashboard');
+                    
+                    req.logIn(creator, function(err){
+                        if (err) return next(err);
+                        res.redirect('/dashboard');
+                    })
                 })
             })
         }

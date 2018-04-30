@@ -91,27 +91,28 @@ window.onload = function () {
             label.innerHTML = "Choose a file...";
         }
         
-        readFile(e.srcElement.files[0]);
+        
+        readFile(e.srcElement.files);
     }
     
-    function readFile(file) {
-        var fileReader = new FileReader();
-        
-        fileReader.onload = function(event){
-            var dataUri = event.target.result;
-                img = document.createElement('img');
+    function readFile(files) {
+        for(var i = 0; i < files.length; i++){
+            (function(file){
+                var fileReader = new FileReader();
                 
-            img.src = dataUri;
-            img.setAttribute('class', 'productImage col-1');
-            
-            productsContainer.appendChild(img);
+                fileReader.onload = function(event){
+                    var dataUri = event.target.result;
+                    
+                    img = document.createElement('img');
+                        
+                    img.src = dataUri;
+                    img.setAttribute('class', 'productImage col-1');
+                    
+                    productsContainer.appendChild(img);
+                }
+                fileReader.readAsDataURL(file);
+            })(files[i]);
         }
-        
-        fileReader.onerror = function(e){
-            console.log('error');
-        }
-        
-        fileReader.readAsDataURL(file);
     }
     
     function deleteLastImage() {

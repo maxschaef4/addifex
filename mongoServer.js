@@ -16,6 +16,10 @@ const handlebars = require('express-handlebars').create({
             }
             this._sections[name] = options.fn(this);
             return null;
+        },
+        flashMessage: function(message, color){
+            //generates flash messages
+            return '<div class="notice ' + color.split("").join("") + ' col-12"><center>' + message + '</center></div>'
         }
     }
 })
@@ -27,15 +31,8 @@ const mongoStore = require('connect-mongo')(session);
 const passport = require('passport');
 //Development
 const morgan = require('morgan');
-//Custom modules
-const scooby = require('./lib/scooby.js');
-const getCartContent = require('./lib/cartContent.js');
 
 var secret = require('./config/secret.js');
-
-//Models
-//var User = require('./models/user.js');
-var Cart = require('./models/cart.js');
 
 //gets routes
 var mainRoutes = require('./routes/main');
@@ -73,10 +70,7 @@ app.use(function(req, res, next){
     next();
 })
 
-app.use(function(req, res, next){
-    console.log(res.locals);
-    next();
-})
+app.use(cartMw);
 
 //Uses the routes middleware
 app.use(mainRoutes);
@@ -84,8 +78,6 @@ app.use(userRoutes);
 app.use(creatorRoutes);
 app.use(productRoutes);
 app.use('/admin', adminRoutes);
-
-app.use(cartMw);
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');

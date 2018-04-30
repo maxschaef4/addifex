@@ -11,7 +11,7 @@
         </a>
     </ul>
 </div>
-<form action="/dashboard-products-new" method="post" class="rightSection_container col-11">
+<form action="/dashboard-products-new" method="post" enctype="multipart/form-data" class="rightSection_container col-11">
     <center><h3>New Product</h3></center>
     <div class="field_container col-12">
         <h4>Product Name</h4>
@@ -70,7 +70,7 @@
         <h4>Images</h4>
         <p>*Add up to 12 images. First image is the products featured image.</p>
         <p id="productImageError" class="error"></p>
-        <input id="productImage" name="productImage" class="file_input" type="file"/>
+        <input id="productImage" name="productImage" class="file_input" type="file" multiple="multiple"/>
         <label for="productImage" id="imageLabel" class="col-3">Choose a file...</label>
         <button id="deleteImage" class="red col-2" type="button">Delete Last</button>
         <div id="imageContainer" class="images_container col-12"></div>

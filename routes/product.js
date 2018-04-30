@@ -4,26 +4,40 @@ var Creator = require('../models/creator');
 var Product = require('../models/product');
 var Cart = require('../models/cart');
 var async = require('async');
+var fs = require('fs');
+var formidable = require('formidable');
 
 router.get('/product/:id', function(req, res, next){
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         res.status('404').json("Page doesn't exist");
         next();
     }else{
-        Product.find({'_id': req.params.id}, function(err, product){
-            if (err) return next(err);
-            
-            if (!product) {
-                res.status('404').json("Page doesn't exist");
-                return next();
+        async.waterfall([
+            function(callback) {
+                Product.find({'_id': req.params.id}, function(err, product){
+                    if (err) return next(err);
+                    
+                    if (product.length == 0) {
+                        res.status('404').json("Page doesn't exist");
+                        return next();
+                    }else{
+                        callback(null, product[0]);
+                    }
+                })
+            },
+            function(product, callback) {
+                Creator.find({'_id': product.info.creatorId}, function(err, creator){
+                    if (err) return next(err);
+                    
+                    if (!creator) {
+                        res.status('500').send("Internal Error");
+                    }
+                    
+                    res.render("product", {product: product, message: req.flash('product'), creator: creator[0]})
+                })
             }
             
-            Creator.find({'_id': product[0].info.creatorId}, function(err, creator){
-                if (err) return next(err);
-                
-                res.render('product', {product: product[0], creator: creator[0], message: req.flash('product')});
-            })
-        })
+        ])
     }
 })
 
@@ -52,6 +66,7 @@ router.post('/product/:id', function(req, res, next){
         cart.save(function(err){
             if (err) return next(err);
             
+            req.flash('product', "Product Added to Cart");
             return res.redirect('/product/' + req.params.id);
         })
     })
@@ -68,8 +83,6 @@ router.get('/shop/:name', function(req, res){
         
         Product.find({'creatorId': creator._id}, function(err, products){
             if (err) return next(err);
-            
-            console.log(products);
             
             res.render('shop', {product: products, creator: creator[0]});
         })
@@ -92,18 +105,9 @@ router.post('/dashboard-products-new', function(req, res, next){
     
     var product = new Product();
     
-    product.name = req.body.name;
-    product.price = req.body.price;
-    product.shipping.cost = req.body.shipCost;
-    product.shipping.time = req.body.shipTime;
-    product.description = req.body.description;
-    product.buildTime = req.body.buildTime;
-    product.options.sizes = req.body.sizes;
-    product.options.colors = req.body.colors;
-    product.options.others = req.body.others;
-    product.category = req.body.category;
-    product.keywords = req.body.keywords;
-    product.info.creatorId = req.user._id;
+    var form = new formidable.IncomingForm();
+    form.multiple = true;
+    var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/public/tmp/' + req.user._id + '/' + product._id;
     
     Creator.findOne({_id: req.user._id}, function(err, creator){
         if (err) return next(err);
@@ -113,21 +117,55 @@ router.post('/dashboard-products-new', function(req, res, next){
             res.redirect('/dashboard-products-new');
             next();
         }
-        
-        creator.products.push(product._id);
-        
-        //updates the creators date to upload time
-        //creator.account.updated = new Date();
-        
-        creator.save(function(err){
-            if (err) return next(err);
-        })
-        
-        product.save(function(err){
-            if (err) return next(err);
-            req.flash('creator', 'Product added successfully');
-            res.redirect('/dashboard-products');
-        })
+        async.waterfall([
+            function(callback) {
+                fs.mkdir(path, function(err){
+                    if (err) return next(err);
+                })
+                
+                form.on('fileBegin', function(name, file){
+                    console.log(file);
+                    file.path = path + '/' + file.name;
+                })
+                
+                form.parse(req, function(err, fields, files){
+                    product.name = fields.name;
+                    product.price = fields.price;
+                    product.shipping.cost = fields.shipCost;
+                    product.shipping.time = fields.shipTime;
+                    product.description = fields.description;
+                    product.buildTime = fields.buildTime;
+                    product.options.sizes = fields.sizes;
+                    product.options.colors = fields.colors;
+                    product.options.others = fields.others;
+                    product.category = fields.category;
+                    product.keywords = fields.keywords;
+                    product.info.creatorId = req.user._id;
+                    
+                    callback(null);
+                })
+            },
+            function(callback) {
+                creator.products.push(product._id);
+                
+                //updates the creators date to upload time
+                //creator.account.updated = new Date();
+                
+                //creator.save(function(err){
+                //    if (err) return next(err);
+                //    console.log('3');
+                //})
+                //
+                //product.save(function(err){
+                //    if (err) return next(err);
+                //    req.flash('creator', 'Product added successfully');
+                //    console.log('4');
+                //    callback(res.redirect('/dashboard-products'));
+                //})
+                
+                res.send('Test');
+            }
+        ])
     })
 })
 
@@ -135,7 +173,7 @@ router.get('/dashboard-products-view/:id', function(req, res, next){
     Product.find({'_id': req.params.id}, function(err, product){
         if (err) return next(err);
         
-        if (!product) {
+        if (product.length == 0) {
             res.status('404').json("Page doesn't exist");
             return next();
         }
@@ -146,6 +184,38 @@ router.get('/dashboard-products-view/:id', function(req, res, next){
             res.status('403').json("You do not have permission");
             return next();
         }
+    })
+})
+
+router.post('/dashboard-products-view/:id', function(req, res, next){
+    Product.remove({'_id': req.params.id}, function(err, product){
+        if (err) return next(err);
+        
+        Creator.find({'_id': req.user._id}, function(err, creator){
+            if (err) return next(err);
+            
+            if (!creator) {
+                res.status('500').json("Internal Error");
+                return next();
+            }
+            
+            var temp = [];
+            
+            while(creator[0].products.length != 0){
+                var e = creator[0].products.pop();
+                
+                if (req.params.id != e) {
+                    temp.push(e);
+                }
+            }
+            
+            creator[0].products = temp;
+            
+            creator[0].save(function(err, creator){
+                req.flash('creator', "Product successfully deleted");
+                res.redirect('/dashboard-products');
+            })
+        })
     })
 })
 
