@@ -121,7 +121,7 @@ button{
   height: 40px;
   
   border: none;
-  border-radius: 5px;
+  border-radius: 20px;
   outline: none;
   
   font-size: 13px;
@@ -182,6 +182,8 @@ select#category{
   border: none;
   border-radius: 0px;
   outline: none;
+  
+  text-align: center;
 }
 
 #search{

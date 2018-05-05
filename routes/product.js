@@ -135,11 +135,11 @@ router.post('/dashboard-products-new', function(req, res, next){
                     product.shipping.time = fields.shipTime;
                     product.description = fields.description;
                     product.buildTime = fields.buildTime;
-                    product.options.sizes = fields.sizes;
-                    product.options.colors = fields.colors;
-                    product.options.others = fields.others;
+                    product.options.sizes = fields.sizes.split(',');
+                    product.options.colors = fields.colors.split(',');
+                    product.options.others = fields.others.split(',');
                     product.category = fields.category;
-                    product.keywords = fields.keywords;
+                    product.keywords = fields.keywords.split(',');
                     product.info.creatorId = req.user._id;
                     
                     callback(null);
@@ -151,19 +151,15 @@ router.post('/dashboard-products-new', function(req, res, next){
                 //updates the creators date to upload time
                 //creator.account.updated = new Date();
                 
-                //creator.save(function(err){
-                //    if (err) return next(err);
-                //    console.log('3');
-                //})
-                //
-                //product.save(function(err){
-                //    if (err) return next(err);
-                //    req.flash('creator', 'Product added successfully');
-                //    console.log('4');
-                //    callback(res.redirect('/dashboard-products'));
-                //})
+                creator.save(function(err){
+                    if (err) return next(err);
+                })
                 
-                res.send('Test');
+                product.save(function(err){
+                    if (err) return next(err);
+                    req.flash('creator', 'Product added successfully');
+                    callback(res.redirect('/dashboard-products'));
+                })
             }
         ])
     })

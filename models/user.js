@@ -4,15 +4,15 @@ var Schema = mongoose.Schema;
 
 //User schema atrributes
 var UserSchema = new Schema({
-    name: {type: String, default: ''},
+    name: String,
     email: {type: String, unique: true, lowercase: true},
     password: String,
     address: {
-        line1: String,
-        line2: String,
-        city: String,
-        state: String,
-        zip: Number,
+        line1: {type: String, default: ''},
+        line2: {type: String, default: ''},
+        city: {type: String, default: ''},
+        state: {type: String, default: ''},
+        zip: {type: String, default: ''}
     },
     account: {
         created: {type: Date, default: Date.now},

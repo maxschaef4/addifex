@@ -116,7 +116,7 @@ window.onload = function () {
     }
     
     function deleteLastImage() {
-        if (!(productsContainer.childNodes.length == 0)) {
+        if (productsContainer.childNodes.length != 0) {
             productsContainer.removeChild(productsContainer.lastChild);
         }else{
             return;
@@ -124,6 +124,8 @@ window.onload = function () {
     }
     
     function addColor() {
+        if (newColor.value == '') return;
+        
         colorList.push(newColor.value);
         
         colors.value = colorList;
@@ -148,10 +150,11 @@ window.onload = function () {
         }else{
             return;
         }
-        
     }
     
     function addSize() {
+        if (newSize.value == '') return;        
+        
         sizeList.push(newSize.value);
         
         sizes.value = sizeList;
@@ -179,6 +182,8 @@ window.onload = function () {
     }
     
     function addOther() {
+        if (newOther.value == '') return;
+        
         otherList.push(newOther.value);
         
         other.value = otherList;
