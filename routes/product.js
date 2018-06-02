@@ -29,7 +29,7 @@ router.get('/product/:id', function(req, res, next){
                 Creator.find({'_id': product.info.creatorId}, function(err, creator){
                     if (err) return next(err);
                     
-                    if (!creator) {
+                    if (creator.length == 0) {
                         res.status('500').send("Internal Error");
                     }
                     
@@ -42,28 +42,32 @@ router.get('/product/:id', function(req, res, next){
 })
 
 router.post('/product/:id', function(req, res, next){
-    Cart.findOne({buyer: req.user._id}, function(err, cart){
+    Cart.find({buyer: req.user._id}, function(err, cart){
         if (err) return next(err);
         
-        if (!cart) {
+        if (!cart[0]) {
             return res.redirect('/product/' + req.params.id);
         }
         
-        cart.products.push({
+        cart[0].products.push({
             product: req.body.productId,
             name: req.body.name,
             price: parseFloat(req.body.price),
-            shippingCost: parseFloat(req.body.shippingCost),
+            shipping: {
+                cost: req.body.shippingCost,
+                time: req.body.shippingTime,
+                weight: req.body.weight
+            },
             color: req.body.color,
             size: req.body.size,
             other: req.body.other,
             creator: req.body.creatorId
         })
         
-        cart.total = (cart.total + parseFloat(req.body.price)).toFixed(2);
-        cart.items++;
+        cart[0].total = (cart[0].total + parseFloat(req.body.price)).toFixed(2);
+        cart[0].items++;
         
-        cart.save(function(err){
+        cart[0].save(function(err){
             if (err) return next(err);
             
             req.flash('product', "Product Added to Cart");
@@ -107,12 +111,12 @@ router.post('/dashboard-products-new', function(req, res, next){
     
     var form = new formidable.IncomingForm();
     form.multiple = true;
-    var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/public/tmp/' + req.user._id + '/' + product._id;
+    var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/' + req.user._id + '/' + product._id;
     
-    Creator.findOne({_id: req.user._id}, function(err, creator){
+    Creator.find({_id: req.user._id}, function(err, creator){
         if (err) return next(err);
         
-        if (!creator) {
+        if (!creator[0]) {
             req.flash('creator', 'Product failed to be uploaded');
             res.redirect('/dashboard-products-new');
             next();
@@ -135,6 +139,8 @@ router.post('/dashboard-products-new', function(req, res, next){
                     product.shipping.time = fields.shipTime;
                     product.description = fields.description;
                     product.buildTime = fields.buildTime;
+                    //option fields get converted to a string with each item separated by a comma
+                    //calling split returns array and can be assigned to product options as an array
                     product.options.sizes = fields.sizes.split(',');
                     product.options.colors = fields.colors.split(',');
                     product.options.others = fields.others.split(',');
@@ -146,23 +152,58 @@ router.post('/dashboard-products-new', function(req, res, next){
                 })
             },
             function(callback) {
-                creator.products.push(product._id);
+                //creator[0].products.push(product._id);
+                //
+                ////updates the creators date to upload time
+                ////creator.account.updated = new Date();
+                //
+                //creator[0].save(function(err){
+                //    if (err) return next(err);
+                //})
+                //
+                //product.save(function(err){
+                //    if (err) return next(err);
+                //    req.flash('creator', 'Product added successfully');
+                //    callback(res.redirect('/dashboard-products'));
+                //})
                 
-                //updates the creators date to upload time
-                //creator.account.updated = new Date();
-                
-                creator.save(function(err){
-                    if (err) return next(err);
-                })
-                
-                product.save(function(err){
-                    if (err) return next(err);
-                    req.flash('creator', 'Product added successfully');
-                    callback(res.redirect('/dashboard-products'));
-                })
+                callback(res.redirect('/imageTest/' + product._id));
             }
         ])
     })
+})
+
+router.get('/imageTest/:id', function(req, res, next){
+    
+    var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/' + req.user._id + '/' + req.params.id;
+    
+    async.waterfall([
+        function(callback) {
+            fs.readdir(path, function(err, files){
+                if (err) return next(err);
+                
+                imageCount = files.length;
+                data = [];
+                
+                async.each(files, function(file, callback){
+                    
+                    var loc = path + '/' + file;
+                    
+                    fs.readFile(loc, function(err, img){
+                        if (err) return next(err);
+                        
+                        data.push(img.toString('base64'));
+                        callback();
+                    })
+                }, function(err){
+                    if (err) return next(err);
+                    
+                    res.render('imageTest', {images: data});
+                })
+            })
+        },
+        
+    ])
 })
 
 router.get('/dashboard-products-view/:id', function(req, res, next){
@@ -219,7 +260,7 @@ router.get('/dashboard-products-edit/:id', function(req, res){
     Product.find({'_id': req.params.id}, function(err, product){
         if (err) return next(err);
         
-        if (!product) {
+        if (product.length == 0) {
             res.status('404').json("Page doesn't exist");
             return next();
         }

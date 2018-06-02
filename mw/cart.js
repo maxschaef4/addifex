@@ -1,24 +1,40 @@
 var Cart = require('../models/cart');
 
-module.exports = function(req, res, next){
-    if (req.user) {
-        var total = 0;
-        
-        Cart.findOne({buyer: req.user._id}, function(err, cart){
+module.exports = {
+    gettingInfo: function(req, res, next){
+        if (req.user) {
+            var total = 0;
             
-            if (err) return next(err);
-            
-            if (cart) {
-                res.locals.cart = {
-                    total: cart.total,
-                    items: cart.items
+            Cart.findOne({buyer: req.user._id}, function(err, cart){
+                
+                if (err) return next(err);
+                
+                if (cart) {
+                    res.locals.cart = {
+                        total: cart.total,
+                        items: cart.items
+                    }
+                }else{
+                    res.locals.cart = 0;
                 }
-            }else{
-                res.locals.cart = 0;
-            }
+                next();
+            })
+        }else{
             next();
-        })
-    }else{
+        }
+    },
+    unsignedCart: function(req, res, next){
+        if (!req.user || req.user.type == 'creator') {
+            req.session.cart = (!req.session.cart ? {} : req.session.cart);
+            
+            req.session.cart.total = (!req.session.cart.total ? 0 : req.session.cart.total);
+            req.session.cart.items = (!req.session.cart.items ? 0 : req.session.cart.items);
+        }else{
+            //req.session.cart = null;
+            delete req.session.cart;
+        }
+        
+        console.log(req.session);
         next();
     }
 }

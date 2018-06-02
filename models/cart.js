@@ -10,7 +10,12 @@ var CartSchema = new Schema({
         name: String,
         quantity: {type: Number, default: 1},
         price: Number,
-        shippingCost: Number,
+        shipping: {
+            cost: Number,
+            time: String,
+            weight: Number,
+        },
+        buildTime: String,
         color: {type: String, default: null},
         size: {type: String, default: null},
         other: {type: String, default: null},

@@ -6,7 +6,8 @@ var ProductSchema = new Schema({
     price: Number,
     shipping: {
         cost: Number,
-        time: String
+        time: String,
+        weight: Number
     },
     description: String,
     buildTime: String,

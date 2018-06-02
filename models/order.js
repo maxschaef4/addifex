@@ -3,19 +3,15 @@ var Schema = mongoose.Schema;
 
 var OrderSchema = new Schema({
     buyer: Schema.Types.ObjectId,
-    seller: Schema.Types.ObjectId,
-    products: [{
+    creator: Schema.Types.ObjectId,
+    product: {
         productId: Schema.Types.ObjectId,
         name: String,
         price: Number,
-        shipping:{
-            cost: Number,
-            time: String
-        },
         color: {type: String, default: ''},
         size: {type: String, default: ''},
         other: {type: String, default: ''}
-    }],
+    },
     from:{
         city: String,
         state: String,
@@ -29,14 +25,14 @@ var OrderSchema = new Schema({
         zip: String,
     },
     subtotal: Number,
-    total: Number,
-    tax: {type: Number, default: 0},
-    buildTime: {type: String, default: ''},
     shipping:{
         cost: Number,
         time: String,
         weight: String
     },
+    tax: {type: Number, default: 0},
+    total: Number,
+    buildTime: {type: String, default: ''},
     status: {type: String, defualt: 'Received'},
     created: {type: Date, default: Date.now},
     updated: {type: Date, default: Date.now}

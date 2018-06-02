@@ -17,14 +17,14 @@
     {{#if cart.products}}
         {{#each cart.products}}
             <div class="item col-12">
-                <a href="/product/{{this._id}}">
+                <a href="/product/{{this.product._id}}">
                     <img src="../images/battery.jpg" class="col-2"/>
                 </a>
                 <div class="itemInfo_container col-9">
                     <ul>
                         <li>{{this.name}}</li>
-                        <li>${{this.product.price}}</li>
-                        <li id="shipping">+ ${{this.product.shipping.cost}} S&H</li>
+                        <li>${{this.price}}</li>
+                        <li id="shipping">+ ${{this.shipping.cost}} S&H</li>
                     </ul>
                     <form>
                         <p>Quantity</p>

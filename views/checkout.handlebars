@@ -1,0 +1,27 @@
+{{#section 'head'}}
+    <link rel="stylesheet" href="styles/checkout_style.css" type="text/css"/>
+    <script src="../scripts/checkout_controller.js"></script>
+    <title>Checkout</title>
+{{/section}}
+<h3>Please review your orders</h3>
+{{#each preOrder}}
+    <p>Product: {{this.product.name}}</p>
+    <p>Options</p>
+    <ul>
+        <li>Color: {{this.product.color}}</li>
+        <li>Size: {{this.product.size}}</li>
+        <li>Option: {{this.product.other}}</li>
+    </ul>
+    <p>Price: {{this.product.price}}</p>
+    <p>Shipping and Handling: {{this.shipping.cost}}</p>
+    <p>Subtotal: {{this.subTotal}}</p>
+    <p>Tax: {{this.tax}}</p>
+    <p>Total: {{this.total}}</p>
+    <h3>Shipping-</h3>
+    <p>To: {{this.to.address1}}</p>
+    <p>{{this.to.address2}}</p>
+    <p>{{this.to.city}}, {{this.to.state}} {{this.to.zip}}</p>
+    <p>From: {{this.from.city}}, {{this.from.state}} {{this.from.zip}}</p>
+    <p>Estimated Time: {{this.shipping.time}}</p>
+    <hr>
+{{/each}}

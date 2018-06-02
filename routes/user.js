@@ -67,6 +67,8 @@ router.get('/cart', function(req, res, next){
         Cart.findOne({buyer: req.user._id}).populate('products.product').exec(function (err, cart){
             if (err) return next(err);
             
+            console.log(cart);
+            
             res.render('cart', {cart: cart, message: req.flash('cart')});
         })
     }
@@ -128,12 +130,65 @@ router.post('/cart', function(req, res, next){
 })
 
 router.get('/checkout', function(req, res, next){
+    
+     if (!req.user) {
+        res.status('403').send('Please sign in to access');
+        next();
+    }
+    
     Cart.find({'buyer': req.user._id}, function(err, cart){
         if (err) return next(err);
         
-        var preOrder = {};
+        //the preOrder array holds objects of mock order objects
+        //no order object is created from Order model
+        //may change that later
+        var preOrder = [];
         
+        //productList gets the list of products from cart[0]
+        var productList = cart[0].products;
         
+        //loops through the list of products and pops each product off and converts the info from that product into a new order
+        while (productList != 0) {
+            var orderTemp = {};
+            var tempProd = productList.pop();
+            
+            orderTemp.buyer = req.user._id;
+            orderTemp.creator = tempProd.creator;
+            orderTemp.product = {};
+            orderTemp.product.productId = tempProd.product;
+            orderTemp.product.name = tempProd.name;
+            orderTemp.product.price = tempProd.price;
+            orderTemp.product.color = (tempProd.color.length == 0 ? 'N/A' : tempProd.color);
+            orderTemp.product.size = (tempProd.size.length == 0 ? 'N/A' : tempProd.size);
+            orderTemp.product.other = (tempProd.other.length == 0 ? 'N/A' : tempProd.other);
+            //orderTemp.from.city = 
+            //orderTemp.from.state =
+            //orderTemp.from.zip =
+            orderTemp.to = {};
+            orderTemp.to.address1 = req.user.address.line1;
+            orderTemp.to.address2 = req.user.address.line2;
+            orderTemp.to.city = req.user.address.city;
+            orderTemp.to.state = req.user.address.state;
+            orderTemp.to.zip = req.user.address.zip;
+            orderTemp.subTotal = (tempProd.price + tempProd.shipping.cost);
+            orderTemp.shipping = {};
+            orderTemp.shipping.cost = tempProd.shipping.cost;
+            orderTemp.shipping.time = tempProd.shipping.time;
+            orderTemp.shipping.weight = tempProd.shipping.weight;
+            orderTemp.tax = 0.0;
+            orderTemp.total = orderTemp.subTotal * (1 + orderTemp.tax);
+            orderTemp.buildTime = tempProd.buildTime;
+            
+            preOrder.push(orderTemp);
+        }
+        
+        //store preOrder array onto the session
+        //don't worry about session preOrder already filled
+        req.session.preOrder = preOrder;
+        
+        console.log(req.session);
+        
+        res.render('checkout', {preOrder: preOrder});
     })
 })
 
