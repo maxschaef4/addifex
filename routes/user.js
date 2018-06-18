@@ -127,14 +127,26 @@ router.post('/account/edit', function(req, res, next){
 })
         
 router.get('/account/notifications', function(req, res){
+    if (!req.user) {
+        return res.redirect('/signin');
+    }
+    
     res.render('notifications');
 })
 
 router.get('/account/favorites', function(req, res){
+    if (!req.user) {
+        return res.redirect('/signin');
+    }
+    
     res.render('favorites');
 })
 
 router.get('/account/orders', function(req, res){
+    if (!req.user) {
+        return res.redirect('/signin');
+    }
+    
     res.render('orders');
 })
 
