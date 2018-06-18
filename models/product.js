@@ -18,7 +18,6 @@ var ProductSchema = new Schema({
     },
     category: String,
     keywords: [String],
-    locals: String,
     info: {
         creatorId: Schema.Types.ObjectId,
         created: {type: Date, default: Date.now},

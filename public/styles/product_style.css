@@ -261,7 +261,8 @@ div.productInfo_container{
 }
 
 img.product_image{
-  height: auto;
+  height: 100px;
+  width: 100px;
 }
 
 div.product_info{

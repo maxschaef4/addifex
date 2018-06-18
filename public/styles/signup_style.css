@@ -117,6 +117,12 @@ center p, h4{
   margin-top: 10px;
 }
 
+div.button_container{
+  margin: 10px 0px 0px 0px;
+  
+  background-color: #313131;
+}
+
 button{
   height: 40px;
   
@@ -209,4 +215,38 @@ p.passwordReq{
   font-size: 14px;
   font-weight: 600;
   color: #313131;
+}
+
+div.hidden-panel{
+  display: block;
+  
+  margin: 10px 0px 0px 0px;
+}
+
+div.option_container{
+  padding: 0px 2% 0px 2%;
+}
+
+ul.options_list{
+  padding: 0px;
+  
+  text-align: center;
+}
+
+ul.options_list li{
+  margin-top: 5px;
+  
+  list-style: none;
+}
+
+select{
+  height: 40px;
+  
+  border: solid 2px #313131;
+  border-radius: 0px;
+  outline-color: #313131;
+}
+
+select:focus{
+  background-color: #c7c7c7;
 }

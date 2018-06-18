@@ -18,7 +18,7 @@ passport.deserializeUser(function(key, done){
     var Model = key.type === 'user' ? User : Creator;
     
     Model.findById(key.id, function(err, user){
-        done(err, user);
+        done(err, {id: user._id, type: key.type});
     })
 })
 

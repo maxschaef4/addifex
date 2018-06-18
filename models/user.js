@@ -7,7 +7,14 @@ var UserSchema = new Schema({
     name: String,
     email: {type: String, unique: true, lowercase: true},
     password: String,
-    address: {
+    shipping: {
+        line1: {type: String, default: ''},
+        line2: {type: String, default: ''},
+        city: {type: String, default: ''},
+        state: {type: String, default: ''},
+        zip: {type: String, default: ''}
+    },
+    billing: {
         line1: {type: String, default: ''},
         line2: {type: String, default: ''},
         city: {type: String, default: ''},

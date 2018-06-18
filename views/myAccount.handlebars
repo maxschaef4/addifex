@@ -1,0 +1,35 @@
+{{#section 'head'}}
+    <link rel="stylesheet" href="../styles/account_style.css" type="text/css"/>
+    <script src="../scripts/account_controller.js"></script>
+    <title>My Acccount</title>
+{{/section}}
+
+<div class="account_section col-9" id="infoSection">
+    <div class="section_content col-12">
+        <ul>
+            <li>{{user.name}}</li>
+            <li>{{user.email}}</li>
+            {{user.password}}
+            <br>
+            <h4>Shipping Info</h4>
+            <li>Maxwell Schaefer</li>
+            <li>5742 Tuscany Lane</li>
+            <li>Waunakee, Wisconsin 53597</li>
+            <br>
+            <h4>Billing Info</h4>
+            <li>Maxwell Schaefer</li>
+            <li>5742 Tuscany Lane</li>
+            <li>Waunakee, Wisconsin 53597</li>
+        </ul>
+        <div class="button_container col-12">
+            <a href="/account/edit">
+                <button class="info_button blue col-12">Edit</button>
+            </a>
+        </div>
+        <div class="button_container col-12">
+            <a href="/account/change">
+                <button class="info_button blue col-12">Change Password</button>
+            </a>
+        </div>
+    </div>
+</div>

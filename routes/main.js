@@ -8,10 +8,10 @@ router.get('/', function(req, res, next){
         if (!req.user) {
             res.render('index', {product: result, user: null});
         }else{
-            if (req.user.account.type != 'user') {
+            if (req.user.type != 'user') {
                 res.render('index', {product: result, user: null});
             }else{
-                res.render('index', {product: result, user: req.user, cart: res.locals.cart})
+                res.render('index', {product: result, user: req.user.id, cart: res.locals.cart})
             }
         }
     })

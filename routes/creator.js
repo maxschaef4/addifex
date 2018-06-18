@@ -32,7 +32,7 @@ router.post('/creatorLogin-new', function(req, res, next){
             creator.save(function(err, creator){
                 if (err) return next(err);
                 
-                var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/public/tmp/' + creator._id;
+                var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/' + creator._id;
                 
                 fs.mkdir(path, function(err){
                     if (err) return next(err);
@@ -51,7 +51,7 @@ router.get('/creatorLogin', function(req, res){
     if (!req.user) {
         res.render('creatorLogin', {layout: 'simple.handlebars', message: req.flash('success')});
     }else{
-        if (req.user.account.type == 'creator') {
+        if (req.user.type == 'creator') {
             res.redirect('dashboard');
         }else{
             res.render('creatorLogin', {layout: 'simple.handlebars', message: req.flash('success')});
@@ -69,7 +69,7 @@ router.get('/dashboard', function(req, res, next){
     if (!req.user) {
         res.redirect('/creatorLogin');
     }else{
-        Creator.findOne({_id: req.user._id}, function(err, creator){
+        Creator.findOne({_id: req.user.id}, function(err, creator){
             if (!creator) {
                 res.status('403').json("You do not have permission");
                 return next();

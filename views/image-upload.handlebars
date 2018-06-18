@@ -1,4 +1,25 @@
+{{#section 'head'}}
+    <link rel="stylesheet" href="styles/dashboard-products-new_style.css" type="text/css"/>
+    <title>New Product</title>
+    <script src="../scripts/imageTest_controller.js"></script>
+{{/section}}
+
 <form action="/image-upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="userImage"/>
-    <button type="submit">Add photo</button>
+    <div class="field_container col-12">
+        <h4>Product Name</h4>
+        <p>*</p>
+        <p id="productNameError" class="error"></p>
+        <input id="name" name="name" class="text_field col-12" type="text"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>Images</h4>
+        <p>*Add up to 12 images. First image is the products featured image.</p>
+        <p id="productImageError" class="error"></p>
+        <input id="productImage" name="productImage" class="file_input" type="file" multiple="multiple"/>
+        <label for="productImage" id="imageLabel" class="col-3">Choose a file...</label>
+        <div id="imageContainer" class="images_container col-12"></div>
+    </div>
+    <div class="button_container col-12">
+        <button type="submit" class="blue col-12">Upload</button>
+    </div>
 </form>

@@ -29,12 +29,11 @@ module.exports = {
             
             req.session.cart.total = (!req.session.cart.total ? 0 : req.session.cart.total);
             req.session.cart.items = (!req.session.cart.items ? 0 : req.session.cart.items);
+            req.session.cart.products = (!req.session.cart.products ? [] : req.session.cart.products);
         }else{
-            //req.session.cart = null;
             delete req.session.cart;
         }
         
-        console.log(req.session);
         next();
     }
 }

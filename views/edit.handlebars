@@ -1,0 +1,194 @@
+{{#section 'head'}}
+    <title>Create Account</title>
+    <link rel="stylesheet" href="/styles/signup_style.css"/>
+    <!--<script src="scripts/signup_controller.js"></script>-->
+{{/section}}
+
+<form id="welcome" class="welcome col-12" action="/account/edit" method="post">
+    <center><h2>Update Account</h2></center>
+    <div class="field_container col-12">
+        <h4>Full Name</h4>
+        <p id="nameError" class="error"></p>
+        <input value="{{user.name}}" id="name" name="name" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>Email</h4>
+        <p id="emailError" class="error"></p>
+        <input value="{{user.email}}" id="email" name="email" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div id="shipping" class="hidden-panel col-12">
+        <center class="col-12"><h3>Shipping Info</h3></center>
+        <center class="col-12"><h3 class="error">{{message.signin}}</h3></center>
+        <div class="field_container col-12">
+            <h4>Address Line 1</h4>
+            <p id="line1Error" class="error"></p>
+            <input value="{{user.shipping.line1}}" id="line1" name="line1" class="text_field col-12" type="text" size="50"/>
+        </div>
+        <div class="field_container col-12">
+            <h4>Address Line 2</h4>
+            <p id="line2Error" class="error"></p>
+            <input value="{{user.shipping.line2}}" id="line2" name="line2" class="text_field col-12" type="text" size="50"/>
+        </div>
+        <div class="field_container col-12">
+            <h4>City</h4>
+            <p id="cityError" class="error"></p>
+            <input value="{{user.shipping.city}}" id="city" name="city" class="text_field col-12" type="text" size="50"/>
+        </div>
+        <div class="field_container col-12">
+            <h4>State</h4>
+            <p id="stateError" class="error"></p>
+            <select name="state" class="col-2">
+                <option>{{user.shipping.state}}</option>
+                <option value="0">----------</option>
+                <option>Alabama</option>
+                <option>Alaska</option>
+                <option>Arizona</option>
+                <option>Arkansas</option>
+                <option>California</option>
+                <option>Colorado</option>
+                <option>Connecticut</option>
+                <option>Delaware</option>
+                <option>District Of Columbia</option>
+                <option>Florida</option>
+                <option>Georgia</option>
+                <option>Hawaii</option>
+                <option>Idaho</option>
+                <option>Illinois</option>
+                <option>Indiana</option>
+                <option>Iowa</option>
+                <option>Kansas</option>
+                <option>Kentucky</option>
+                <option>Louisiana</option>
+                <option>Maine</option>
+                <option>Maryland</option>
+                <option>Massachusetts</option>
+                <option>Michigan</option>
+                <option>Minnesota</option>
+                <option>Mississippi</option>
+                <option>Missouri</option>
+                <option>Montana</option>
+                <option>Nebraska</option>
+                <option>Nevada</option>
+                <option>New Hampshire</option>
+                <option>New Jersey</option>
+                <option>New Mexico</option>
+                <option>New York</option>
+                <option>North Carolina</option>
+                <option>North Dakota</option>
+                <option>Ohio</option>
+                <option>Oklahoma</option>
+                <option>Oregon</option>
+                <option>Pennsylvania</option>
+                <option>Rhode Island</option>
+                <option>South Carolina</option>
+                <option>South Dakota</option>
+                <option>Tennessee</option>
+                <option>Texas</option>
+                <option>Utah</option>
+                <option>Vermont</option>
+                <option>Virginia</option>
+                <option>Washington</option>
+                <option>West Virginia</option>
+                <option>Wisconsin</option>
+                <option>Wyoming</option>
+            </select>
+        </div>
+        <div class="field_container col-12">
+            <h4>Zipcode</h4>
+            <p id="zipError" class="error"></p>
+            <input value="{{user.shipping.zip}}" id="zip" name="zip" class="text_field col-12" type="text" size="50"/>
+        </div>
+        <div class="field_container col-12">
+            <input type="checkbox" name="different" id="different" class="different-check col-1"/>
+            <label for="different"><h4>Billing info is different from shipping info</h4></label>
+        </div>
+    </div>
+    <div id="billing" class="hidden-panel col-12">
+        <center class="col-12"><h3>Billing Info</h3></center>
+        <center class="col-12"><h3 class="error"></h3></center>
+        <div class="field_container col-12">
+            <h4>Address Line 1</h4>
+            <p id="billLine1Error" class="error"></p>
+            <input value="{{user.billing.line1}}" id="billLine1" name="billLine1" class="text_field col-12" type="text" size="50"/>
+        </div>
+        <div class="field_container col-12">
+            <h4>Address Line 2</h4>
+            <p id="billLine2Error" class="error"></p>
+            <input value="{{user.billing.line2}}" id="billLine2" name="billLine2" class="text_field col-12" type="text" size="50"/>
+        </div>
+        <div class="field_container col-12">
+            <h4>City</h4>
+            <p id="cityError" class="error"></p>
+            <input value="{{user.billing.city}}" id="billCity" name="billCity" class="text_field col-12" type="text" size="50"/>
+        </div>
+        <div class="field_container col-12">
+            <h4>State</h4>
+            <p id="billStateError" class="error"></p>
+            <select name="billState" class="col-2">
+                <option>{{user.billing.state}}</option>
+                <option value="0">----------</option>
+                <option>Alabama</option>
+                <option>Alaska</option>
+                <option>Arizona</option>
+                <option>Arkansas</option>
+                <option>California</option>
+                <option>Colorado</option>
+                <option>Connecticut</option>
+                <option>Delaware</option>
+                <option>District Of Columbia</option>
+                <option>Florida</option>
+                <option>Georgia</option>
+                <option>Hawaii</option>
+                <option>Idaho</option>
+                <option>Illinois</option>
+                <option>Indiana</option>
+                <option>Iowa</option>
+                <option>Kansas</option>
+                <option>Kentucky</option>
+                <option>Louisiana</option>
+                <option>Maine</option>
+                <option>Maryland</option>
+                <option>Massachusetts</option>
+                <option>Michigan</option>
+                <option>Minnesota</option>
+                <option>Mississippi</option>
+                <option>Missouri</option>
+                <option>Montana</option>
+                <option>Nebraska</option>
+                <option>Nevada</option>
+                <option>New Hampshire</option>
+                <option>New Jersey</option>
+                <option>New Mexico</option>
+                <option>New York</option>
+                <option>North Carolina</option>
+                <option>North Dakota</option>
+                <option>Ohio</option>
+                <option>Oklahoma</option>
+                <option>Oregon</option>
+                <option>Pennsylvania</option>
+                <option>Rhode Island</option>
+                <option>South Carolina</option>
+                <option>South Dakota</option>
+                <option>Tennessee</option>
+                <option>Texas</option>
+                <option>Utah</option>
+                <option>Vermont</option>
+                <option>Virginia</option>
+                <option>Washington</option>
+                <option>West Virginia</option>
+                <option>Wisconsin</option>
+                <option>Wyoming</option>
+            </select>
+        </div>
+        <div class="field_container col-12">
+            <h4>Zipcode</h4>
+            <p id="billZipError" class="error"></p>
+            <input value="{{user.billing.zip}}" id="billZip" name="billZip" class="text_field col-12" type="text" size="50"/>
+        </div>
+    </div>
+    <center><h3 class="error">{{message}}</h3></center>
+    <div class="button_container col-12">
+        <button class="blue col-12" id="update" type="submit">Update</button>
+        <a href="/account/myAccount/delete/{{user._id}}"><button class="red col-12" id="remove" type="button">Delete</button></a>
+    </div>
+</form>

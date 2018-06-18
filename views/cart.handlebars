@@ -13,38 +13,32 @@
 {{#if message}}
     {{{flashMessage message "red"}}}
 {{/if}}
-{{#if cart}}
-    {{#if cart.products}}
-        {{#each cart.products}}
-            <div class="item col-12">
-                <a href="/product/{{this.product._id}}">
-                    <img src="../images/battery.jpg" class="col-2"/>
-                </a>
-                <div class="itemInfo_container col-9">
-                    <ul>
-                        <li>{{this.name}}</li>
-                        <li>${{this.price}}</li>
-                        <li id="shipping">+ ${{this.shipping.cost}} S&H</li>
-                    </ul>
-                    <form>
-                        <p>Quantity</p>
-                        <input type="text" value="{{this.quantity}}" id="quantity"/>
-                    </form>
-                    <form action="/cart" method="post">
-                        <button type="submit" class="red col-2">Remove</button>
-                        <input type="hidden" name="productId" value="{{this.product._id}}"/>
-                    </form>
-                </div>
+{{#if cart.products}}
+    {{#each cart.products}}
+        <div class="item col-12">
+            <a href="/product/{{this.product._id}}">
+                <img src="../images/battery.jpg" class="col-2"/>
+            </a>
+            <div class="itemInfo_container col-9">
+                <ul>
+                    <li>{{this.name}}</li>
+                    <li>${{this.price}}</li>
+                    <li id="shipping">+ ${{this.shipping.cost}} S&H</li>
+                </ul>
+                <form>
+                    <p>Quantity</p>
+                    <input type="text" value="{{this.quantity}}" id="quantity"/>
+                </form>
+                <form action="/cart" method="post">
+                    <button type="submit" class="red col-2">Remove</button>
+                    <input type="hidden" name="productId" value="{{this.product._id}}"/>
+                </form>
             </div>
-        {{/each}}
-    {{else}}
-        <div class="notice col-12">
-            <center><h2>No products in your cart!</h2></center>
         </div>
-    {{/if}}
+    {{/each}}
 {{else}}
     <div class="notice col-12">
-        <center><h3>Error Loading Cart</h3></center>
+        <center><h2>No products in your cart!</h2></center>
     </div>
 {{/if}}
 <div class="cartInfo_container col-12">

@@ -37,6 +37,7 @@ var secret = require('./config/secret.js');
 //gets routes
 var mainRoutes = require('./routes/main');
 var userRoutes = require('./routes/user');
+var cartRoutes = require('./routes/cart');
 var creatorRoutes = require('./routes/creator');
 var productRoutes = require('./routes/product');
 var adminRoutes = require('./routes/admin');
@@ -66,7 +67,7 @@ app.use(passport.session());
 //allows user to be accessed by all routes
 app.use(function(req, res, next){
     if (req.user) {
-        res.locals.user = req.user._id;
+        res.locals.user = req.user.id;
     }else{
         res.locals.user = null;
     }
@@ -79,9 +80,13 @@ app.use(cartMw.unsignedCart);
 //Uses the routes middleware
 app.use(mainRoutes);
 app.use(userRoutes);
+app.use(cartRoutes);
 app.use(creatorRoutes);
 app.use(productRoutes);
 app.use('/admin', adminRoutes);
+//testing purposes
+var testRoutes = require('./routes/imageTest');
+app.use(testRoutes);
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');

@@ -288,18 +288,6 @@ div.account_section{
   padding: 5px 1% 0px 1%;
 }
 
-#likesSection{
-  display: block;
-}
-
-#ordersSection{
-  display: none;
-}
-
-#infoSection{
-  display: none;
-}
-
 div.section_header{
   background-color: #313131;
 }

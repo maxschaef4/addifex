@@ -33,16 +33,62 @@ router.get('/product/:id', function(req, res, next){
                         res.status('500').send("Internal Error");
                     }
                     
-                    res.render("product", {product: product, message: req.flash('product'), creator: creator[0]})
+                    var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/' + creator[0]._id + '/' + req.params.id;
+                    
+                    fs.readdir(path, function(err, files){
+                        if (err) return next(err);
+                        
+                        data = [];
+                        
+                        async.each(files, function(file, callback){
+                            
+                            let loc = path + '/' + file;
+                            
+                            fs.readFile(loc, function(err, img){
+                                if (err) return next(err);
+                                
+                                data.push(img.toString('base64'));
+                                callback();
+                            })
+                        }, function(err){
+                            if (err) return next(err);
+                            
+                            callback(res.render("product", {product: product, images: data, message: req.flash('product'), creator: creator[0]}))
+                        })
+                    })
                 })
             }
-            
         ])
     }
 })
 
 router.post('/product/:id', function(req, res, next){
-    Cart.find({buyer: req.user._id}, function(err, cart){
+    
+    //runs for non-users
+    if (!req.user) {
+        var cart = {};
+        cart.product = {};
+        cart.product._id = req.body.productId;
+        cart.name = req.body.name;
+        cart.price = parseFloat(req.body.price);
+        cart.shipping = {};
+        cart.shipping.cost = req.body.shippingCost;
+        cart.shipping.time = req.body.shippingTime;
+        cart.shipping.weight = req.body.weight;
+        cart.color = req.body.color;
+        cart.size = req.body.size;
+        cart.other = req.body.other;
+        cart.creator = req.body.creatorId;
+        
+        req.session.cart.total += cart.price;
+        req.session.cart.items++;
+        req.session.cart.products.push(cart);
+        
+        req.flash('product', "Product Added to Cart");
+        return res.redirect('/product/' + req.params.id);
+    }
+    
+    Cart.find({buyer: req.user.id}, function(err, cart){
         if (err) return next(err);
         
         if (!cart[0]) {
@@ -80,12 +126,12 @@ router.get('/shop/:name', function(req, res){
     Creator.find({'shopName': req.params.name}, function(err, creator){
         if (err) return next(err);
             
-        if (!creator) {
+        if (!creator[0]) {
             res.status('404').json("Page doesn't exist");
             return next();
         }
         
-        Product.find({'creatorId': creator._id}, function(err, products){
+        Product.find({'creatorId': creator[0]._id}, function(err, products){
             if (err) return next(err);
             
             res.render('shop', {product: products, creator: creator[0]});
@@ -94,7 +140,7 @@ router.get('/shop/:name', function(req, res){
 })
 
 router.get('/dashboard-products', function(req, res, next){
-    Product.find({"info.creatorId": req.user._id}, function(err, products){
+    Product.find({"info.creatorId": req.user.id}, function(err, products){
         if (err) return next(err);
         
         res.render('dashboard-products', {layout: 'simple.handlebars', message: req.flash('creator'), product: products});
@@ -111,9 +157,9 @@ router.post('/dashboard-products-new', function(req, res, next){
     
     var form = new formidable.IncomingForm();
     form.multiple = true;
-    var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/' + req.user._id + '/' + product._id;
+    var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/' + req.user.id + '/' + product._id;
     
-    Creator.find({_id: req.user._id}, function(err, creator){
+    Creator.find({_id: req.user.id}, function(err, creator){
         if (err) return next(err);
         
         if (!creator[0]) {
@@ -146,64 +192,29 @@ router.post('/dashboard-products-new', function(req, res, next){
                     product.options.others = fields.others.split(',');
                     product.category = fields.category;
                     product.keywords = fields.keywords.split(',');
-                    product.info.creatorId = req.user._id;
+                    product.info.creatorId = req.user.id;
                     
                     callback(null);
                 })
             },
             function(callback) {
-                //creator[0].products.push(product._id);
-                //
-                ////updates the creators date to upload time
-                ////creator.account.updated = new Date();
-                //
-                //creator[0].save(function(err){
-                //    if (err) return next(err);
-                //})
-                //
-                //product.save(function(err){
-                //    if (err) return next(err);
-                //    req.flash('creator', 'Product added successfully');
-                //    callback(res.redirect('/dashboard-products'));
-                //})
+                creator[0].products.push(product._id);
                 
-                callback(res.redirect('/imageTest/' + product._id));
+                //updates the creators date to upload time
+                //creator.account.updated = new Date();
+                
+                creator[0].save(function(err){
+                    if (err) return next(err);
+                })
+                
+                product.save(function(err){
+                    if (err) return next(err);
+                    req.flash('creator', 'Product added successfully');
+                    callback(res.redirect('/dashboard-products'));
+                })
             }
         ])
     })
-})
-
-router.get('/imageTest/:id', function(req, res, next){
-    
-    var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/' + req.user._id + '/' + req.params.id;
-    
-    async.waterfall([
-        function(callback) {
-            fs.readdir(path, function(err, files){
-                if (err) return next(err);
-                
-                imageCount = files.length;
-                data = [];
-                
-                async.each(files, function(file, callback){
-                    
-                    var loc = path + '/' + file;
-                    
-                    fs.readFile(loc, function(err, img){
-                        if (err) return next(err);
-                        
-                        data.push(img.toString('base64'));
-                        callback();
-                    })
-                }, function(err){
-                    if (err) return next(err);
-                    
-                    res.render('imageTest', {images: data});
-                })
-            })
-        },
-        
-    ])
 })
 
 router.get('/dashboard-products-view/:id', function(req, res, next){
@@ -215,7 +226,7 @@ router.get('/dashboard-products-view/:id', function(req, res, next){
             return next();
         }
         
-        if (product[0].info.creatorId.equals(req.user._id)) {
+        if (product[0].info.creatorId.equals(req.user.id)) {
             res.render('dashboard-products-view', {layout: 'simple.handlebars', product: product[0], message: req.flash('success')});
         }else{
             res.status('403').json("You do not have permission");
@@ -228,7 +239,7 @@ router.post('/dashboard-products-view/:id', function(req, res, next){
     Product.remove({'_id': req.params.id}, function(err, product){
         if (err) return next(err);
         
-        Creator.find({'_id': req.user._id}, function(err, creator){
+        Creator.find({'_id': req.user.id}, function(err, creator){
             if (err) return next(err);
             
             if (!creator) {
@@ -265,7 +276,7 @@ router.get('/dashboard-products-edit/:id', function(req, res){
             return next();
         }
         
-        if (product[0].info.creatorId.equals(req.user._id)) {
+        if (product[0].info.creatorId.equals(req.user.id)) {
             res.render('dashboard-products-edit', {layout: 'simple.handlebars', product: product[0], message: req.flash('success')});
         }else{
             res.status('403').json("You do not have permission");

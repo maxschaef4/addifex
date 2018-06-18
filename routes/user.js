@@ -1,9 +1,10 @@
-var router = require('express').Router();
-var User = require('../models/user');
-var Cart = require('../models/cart');
-var passport = require('passport');
-var passportConfig = require('../config/passport');
-var async = require('async');
+const router = require('express').Router();
+const mongoose = require('mongoose');
+const User = require('../models/user');
+const Cart = require('../models/cart');
+const passport = require('passport');
+const passportConfig = require('../config/passport');
+const async = require('async');
 
 router.get('/signup', function(req, res){
     res.render('signup', {layout: 'simple.handlebars', message: req.flash('signup')});
@@ -12,11 +13,21 @@ router.get('/signup', function(req, res){
 router.post('/signup', function(req, res, next){
     async.waterfall([
         function (callback) {
-            var user = new User();
+            let user = new User();
             
             user.name = req.body.name;
             user.email = req.body.email;
             user.password = req.body.password;
+            user.shipping.line1 = req.body.line1;
+            user.shipping.line2 = req.body.line2;
+            user.shipping.city = req.body.city;
+            user.shipping.state = req.body.state;
+            user.shipping.zip = req.body.zip;
+            user.billing.line1 = (req.body.billLine1.length == 0 ? req.body.line1 : req.body.billLine1);
+            user.billing.line2 = (req.body.billLine2.length == 0 ? req.body.line2 : req.body.billLine2);
+            user.billing.city = (req.body.billCity.length == 0 ? req.body.city : req.body.billCity);
+            user.billing.state = (req.body.billState.length == 0 ? req.body.state : req.body.billState);
+            user.billing.zip = (req.body.billZip.length == 0 ? req.body.zip : req.body.billZip);
             
             User.findOne({email: req.body.email}, function(err, existingUser){
                 if (err) return next(err);
@@ -58,159 +69,35 @@ router.post('/signin', passport.authenticate('user', {
     failureFlash: true
 }))
 
-router.get('/cart', function(req, res, next){
-    if (!req.user) {
-        res.render('cart', {cart: null});
-    }else if (req.user.account.type != 'user') {
-        res.render('cart', {cart: null});
-    }else{
-        Cart.findOne({buyer: req.user._id}).populate('products.product').exec(function (err, cart){
-            if (err) return next(err);
-            
-            console.log(cart);
-            
-            res.render('cart', {cart: cart, message: req.flash('cart')});
-        })
-    }
-})
-
-//post is used for removing a product from the cart
-router.post('/cart', function(req, res, next){
-    Cart.find({'buyer': req.user._id}, function(err, cart){
-        if (err) return next(err);
-        
-        //cart variable is an array so in order for cart to be accessed and saved we must get the cart at the 0 index of cart array
-        
-        if (cart.length == 0) {
-            res.status('500').send('Internal Error');
-        }
-        
-        //boolean variable that is set true when one product is removed from array
-        //makes it so that the loop doesn't remove the same product in case user accidentally adds product twice
-        var removed = false;
-        //adds products that don't have same id to temp array and reassigns this array to products array in cart
-        var temp = [];
-        
-        while (cart[0].products.length != 0) {
-            //removes last product from product array in cart
-            e = cart[0].products.pop();
-            
-            //checks if product id in cart matches the product to be removed
-            //if it doesn't match, it is added to the temp array to later be reassigned
-            //the product array in cart is reduced to 0 (through popping the last element) in this loop and the product are applied to another array
-            //at the end of the loop, the product array length will be 0
-            if (e.product != req.body.productId){
-                temp.push(e);
-            }else{
-                //if the product id does match, boolean removed is checked to see if another product has been removed
-                //if it hasn't, the cart total is subtracted by product price and the items count is decremented
-                //the removed flag will then be set to true
-                //once true, if another product in the cart has the same id, it won't removed by this loop and will added to the temp array
-                //prevents a user from having to re-add the product in case they accidentally added the product to the cart twice
-                if (removed != true) {
-                    cart[0].total = parseFloat((cart[0].total - e.price)).toFixed(2);
-                    cart[0].items--;
-                    removed = true;
-                }else{
-                    temp.push(e);
-                }
-            }
-        }
-        
-        //temp array is assigned to the products array in cart
-        cart[0].products = temp;
-        
-        cart[0].save(function(err, cart){
-            if (err) return next(err);
-            
-            req.flash('cart', 'Product Removed');
-            res.redirect('/cart');
-        })
-    })
-})
-
-router.get('/checkout', function(req, res, next){
-    
-     if (!req.user) {
-        res.status('403').send('Please sign in to access');
-        next();
-    }
-    
-    Cart.find({'buyer': req.user._id}, function(err, cart){
-        if (err) return next(err);
-        
-        //the preOrder array holds objects of mock order objects
-        //no order object is created from Order model
-        //may change that later
-        var preOrder = [];
-        
-        //productList gets the list of products from cart[0]
-        var productList = cart[0].products;
-        
-        //loops through the list of products and pops each product off and converts the info from that product into a new order
-        while (productList != 0) {
-            var orderTemp = {};
-            var tempProd = productList.pop();
-            
-            orderTemp.buyer = req.user._id;
-            orderTemp.creator = tempProd.creator;
-            orderTemp.product = {};
-            orderTemp.product.productId = tempProd.product;
-            orderTemp.product.name = tempProd.name;
-            orderTemp.product.price = tempProd.price;
-            orderTemp.product.color = (tempProd.color.length == 0 ? 'N/A' : tempProd.color);
-            orderTemp.product.size = (tempProd.size.length == 0 ? 'N/A' : tempProd.size);
-            orderTemp.product.other = (tempProd.other.length == 0 ? 'N/A' : tempProd.other);
-            //orderTemp.from.city = 
-            //orderTemp.from.state =
-            //orderTemp.from.zip =
-            orderTemp.to = {};
-            orderTemp.to.address1 = req.user.address.line1;
-            orderTemp.to.address2 = req.user.address.line2;
-            orderTemp.to.city = req.user.address.city;
-            orderTemp.to.state = req.user.address.state;
-            orderTemp.to.zip = req.user.address.zip;
-            orderTemp.subTotal = (tempProd.price + tempProd.shipping.cost);
-            orderTemp.shipping = {};
-            orderTemp.shipping.cost = tempProd.shipping.cost;
-            orderTemp.shipping.time = tempProd.shipping.time;
-            orderTemp.shipping.weight = tempProd.shipping.weight;
-            orderTemp.tax = 0.0;
-            orderTemp.total = orderTemp.subTotal * (1 + orderTemp.tax);
-            orderTemp.buildTime = tempProd.buildTime;
-            
-            preOrder.push(orderTemp);
-        }
-        
-        //store preOrder array onto the session
-        //don't worry about session preOrder already filled
-        req.session.preOrder = preOrder;
-        
-        console.log(req.session);
-        
-        res.render('checkout', {preOrder: preOrder});
-    })
-})
-
 router.get('/account', function(req, res, next){
     if (!req.user) {
-        res.render('account');
+        res.redirect('/signin');
     }else{
-        User.findOne({_id: req.user._id}, function(err, user){
+        User.find({_id: req.user.id}, function(err, user){
             if (err) return next(err);
             
-            
-            res.render('account', {user: user});
+            res.render('account', {user: user[0]});
         })
     }
 })
 
-router.get('/account/edit-info', function(req, res){
-    res.render('edit-info', {layout: 'simple.handlebars', message: req.flash('success')});
+router.get('/account/edit', function(req, res){
+    if (!req.user) {
+        res.redirect('/signin');
+    }
+    
+    User.find({_id: req.user.id}, function(err, user){
+        res.render('edit', {layout: 'simple.handlebars', user: user[0], message: req.flash('success')});
+    })
 })
 
-router.post('/account/edit-info', function(req, res, next){
-    User.findOne({_id: req.user._id}, function(err, user){
+router.post('/account/edit', function(req, res, next){
+    
+    if (!req.user) {
+        res.redirect('/signin');
+    }
+    
+    User.findOne({_id: req.user.id}, function(err, user){
         if (err) return next(err);
         
         if (!user) {
@@ -220,6 +107,16 @@ router.post('/account/edit-info', function(req, res, next){
         
         if (req.body.name) user.name = req.body.name;
         if (req.body.email) user.email = req.body.email;
+        user.shipping.line1 = req.body.line1;
+        user.shipping.line2 = req.body.line2;
+        user.shipping.city = req.body.city;
+        user.shipping.state = req.body.state;
+        user.shipping.zip = req.body.zip;
+        user.billing.line1 = (req.body.billLine1.length == 0 ? req.body.line1 : req.body.billLine1);
+        user.billing.line2 = (req.body.billLine2.length == 0 ? req.body.line2 : req.body.billLine2);
+        user.billing.city = (req.body.billCity.length == 0 ? req.body.city : req.body.billCity);
+        user.billing.state = (req.body.billState.length == 0 ? req.body.state : req.body.billState);
+        user.billing.zip = (req.body.billZip.length == 0 ? req.body.zip : req.body.billZip);
         
         user.save(function (err){
             if (err) return next(err);
@@ -228,14 +125,64 @@ router.post('/account/edit-info', function(req, res, next){
         })
     })
 })
+        
+router.get('/account/notifications', function(req, res){
+    res.render('notifications');
+})
 
-router.get('/signout', function(req, res){
+router.get('/account/favorites', function(req, res){
+    res.render('favorites');
+})
+
+router.get('/account/orders', function(req, res){
+    res.render('orders');
+})
+
+router.get('/account/myAccount', function(req, res){
+    if (!req.user) {
+        res.redirect('/signin');
+    }
+    
+    User.find({_id: req.user.id}, function(err, user){
+        if (err) return next(err);
+        
+        res.render('myAccount', {user: user[0]});
+    })
+})
+
+router.get('/account/myAccount/delete/:id', function(req, res, next){
+    if (!req.user) {
+        return res.redirect('/signin');
+    }
+    
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        res.status('404').json("Page doesn't exist");
+        return next();
+    }
+    
+    if (req.user.id != req.params.id) {
+        res.status('403').json("Access Denied");
+        return next();
+    }else{
+        
+        User.remove({_id: req.user.id}, function(err, user){
+            if (err) return next(err);
+            
+            //use async.waterfall
+            req.logout();
+            res.redirect('/');
+        })
+    }
+})
+
+router.get('/account/signout', function(req, res){
+    if (!req.user) {
+        res.redirect('/signin');
+    }
+    
+    //use async.waterfall
     req.logout();
     res.redirect('/');
-})
-        
-router.get('/notifications', function(req, res){
-    res.render('notifications');
 })
 
 module.exports = router;
