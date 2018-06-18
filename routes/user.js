@@ -80,51 +80,6 @@ router.get('/account', function(req, res, next){
         })
     }
 })
-
-router.get('/account/edit', function(req, res){
-    if (!req.user) {
-        res.redirect('/signin');
-    }
-    
-    User.find({_id: req.user.id}, function(err, user){
-        res.render('edit', {layout: 'simple.handlebars', user: user[0], message: req.flash('success')});
-    })
-})
-
-router.post('/account/edit', function(req, res, next){
-    
-    if (!req.user) {
-        res.redirect('/signin');
-    }
-    
-    User.findOne({_id: req.user.id}, function(err, user){
-        if (err) return next(err);
-        
-        if (!user) {
-            req.flash('success', 'Problem updating your account');
-            return next();
-        }
-        
-        if (req.body.name) user.name = req.body.name;
-        if (req.body.email) user.email = req.body.email;
-        user.shipping.line1 = req.body.line1;
-        user.shipping.line2 = req.body.line2;
-        user.shipping.city = req.body.city;
-        user.shipping.state = req.body.state;
-        user.shipping.zip = req.body.zip;
-        user.billing.line1 = (req.body.billLine1.length == 0 ? req.body.line1 : req.body.billLine1);
-        user.billing.line2 = (req.body.billLine2.length == 0 ? req.body.line2 : req.body.billLine2);
-        user.billing.city = (req.body.billCity.length == 0 ? req.body.city : req.body.billCity);
-        user.billing.state = (req.body.billState.length == 0 ? req.body.state : req.body.billState);
-        user.billing.zip = (req.body.billZip.length == 0 ? req.body.zip : req.body.billZip);
-        
-        user.save(function (err){
-            if (err) return next(err);
-            req.flash('success', 'Account has been updated');
-            return res.redirect('/account');
-        })
-    })
-})
         
 router.get('/account/notifications', function(req, res){
     if (!req.user) {
@@ -185,6 +140,51 @@ router.get('/account/myAccount/delete/:id', function(req, res, next){
             res.redirect('/');
         })
     }
+})
+
+router.get('/account/edit', function(req, res){
+    if (!req.user) {
+        res.redirect('/signin');
+    }
+    
+    User.find({_id: req.user.id}, function(err, user){
+        res.render('edit', {layout: 'simple.handlebars', user: user[0], message: req.flash('success')});
+    })
+})
+
+router.post('/account/edit', function(req, res, next){
+    
+    if (!req.user) {
+        res.redirect('/signin');
+    }
+    
+    User.findOne({_id: req.user.id}, function(err, user){
+        if (err) return next(err);
+        
+        if (!user) {
+            req.flash('success', 'Problem updating your account');
+            return next();
+        }
+        
+        if (req.body.name) user.name = req.body.name;
+        if (req.body.email) user.email = req.body.email;
+        user.shipping.line1 = req.body.line1;
+        user.shipping.line2 = req.body.line2;
+        user.shipping.city = req.body.city;
+        user.shipping.state = req.body.state;
+        user.shipping.zip = req.body.zip;
+        user.billing.line1 = (req.body.billLine1.length == 0 ? req.body.line1 : req.body.billLine1);
+        user.billing.line2 = (req.body.billLine2.length == 0 ? req.body.line2 : req.body.billLine2);
+        user.billing.city = (req.body.billCity.length == 0 ? req.body.city : req.body.billCity);
+        user.billing.state = (req.body.billState.length == 0 ? req.body.state : req.body.billState);
+        user.billing.zip = (req.body.billZip.length == 0 ? req.body.zip : req.body.billZip);
+        
+        user.save(function (err){
+            if (err) return next(err);
+            req.flash('success', 'Account has been updated');
+            return res.redirect('/account');
+        })
+    })
 })
 
 router.get('/account/signout', function(req, res){
