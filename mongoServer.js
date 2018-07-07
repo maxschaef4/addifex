@@ -40,6 +40,8 @@ var userRoutes = require('./routes/user');
 var cartRoutes = require('./routes/cart');
 var creatorRoutes = require('./routes/creator');
 var productRoutes = require('./routes/product');
+var orderRoutes = require('./routes/orders');
+var guestRoutes = require('./routes/guest');
 var adminRoutes = require('./routes/admin');
 
 //Custom Middleware
@@ -51,12 +53,12 @@ app.use(express.static(__dirname + '/public'));
 app.use(cookieParser());
 app.use(require('body-parser').urlencoded({extended: true}));
 app.use(session({
-    resave: true,
-    saveUninitialized: true,
+    resave: false,
+    saveUninitialized: false,
     secret: secret.secretKey,
     store: new mongoStore({url: secret.database, autoReconnect: true}),
     cookie: {
-        originalMaxAge: 600000
+        originalMaxAge: 6000000
     }
 }))
 app.use(morgan('dev'));
@@ -83,6 +85,8 @@ app.use(userRoutes);
 app.use(cartRoutes);
 app.use(creatorRoutes);
 app.use(productRoutes);
+app.use(orderRoutes);
+app.use(guestRoutes);
 app.use('/admin', adminRoutes);
 //testing purposes
 var testRoutes = require('./routes/imageTest');
@@ -90,6 +94,28 @@ app.use(testRoutes);
 
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
+
+/*******
+ *Error Pages
+ */
+
+//403 page
+app.use(function(req, res){
+    res.status(403);
+    res.render('403', {layout: 'simple.handlebars'});
+})
+
+//404 page
+app.use(function(req, res){
+    res.status(404);
+    res.render('404', {layout: 'simple.handlebars'});
+});
+
+//500 page
+app.use(function(req, res){
+    res.status(500);
+    res.render('500', {layout: 'simple.handlebars'});
+});
 
 mongoose.connect(secret.database, function(err){
     if (err) {

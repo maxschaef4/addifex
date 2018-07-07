@@ -6,7 +6,7 @@ var CartSchema = new Schema({
     total: {type: Number, default: 0},
     items: {type: Number, default: 0},
     products: [{
-        product: {type: Schema.Types.ObjectId, ref: 'Product'},
+        productId: Schema.Types.ObjectId,
         name: String,
         quantity: {type: Number, default: 1},
         price: Number,
@@ -14,12 +14,15 @@ var CartSchema = new Schema({
             cost: Number,
             time: String,
             weight: Number,
+            city: String,
+            state: String,
+            zip: Number
         },
         buildTime: String,
         color: {type: String, default: null},
         size: {type: String, default: null},
         other: {type: String, default: null},
-        creator: {type: Schema.Types.ObjectId, ref: 'Creator'}
+        creator: Schema.Types.ObjectId,
     }],
     info: {
         updated: {type: Date, default: Date.now}
@@ -32,7 +35,7 @@ CartSchema.methods.remove = function(id, done){
     //makes it so that the loop doesn't remove the same product in case user accidentally adds product twice
     let removed = false;
     //adds products that don't have same id to temp array and reassigns this array to products array in cart
-    let temp = [];
+    var temp = [];
     
     while (this.products.length != 0) {
         //removes last product from product array in cart
@@ -42,7 +45,7 @@ CartSchema.methods.remove = function(id, done){
         //if it doesn't match, it is added to the temp array to later be reassigned
         //the product array in cart is reduced to 0 (through popping the last element) in this loop and the product are applied to another array
         //at the end of the loop, the product array length will be 0
-        if (e.product._id != id){
+        if (!e.productId.equals(id)){
             temp.push(e);
         }else{
             //if the product id does match, boolean removed is checked to see if another product has been removed

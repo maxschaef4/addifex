@@ -18,41 +18,45 @@ passport.deserializeUser(function(key, done){
     var Model = key.type === 'user' ? User : Creator;
     
     Model.findById(key.id, function(err, user){
+        if (err) return done(err, null);
+        if (!user) return done(err, null);
+        if (user.length == 0) return done(err, null);
+        
         done(err, {id: user._id, type: key.type});
     })
 })
 
 passport.use('user', new LocalStrategy({usernameField: 'email', passReqToCallback: true,}, function(req, username, password, done){
-    User.findOne({email: username}, function(err, user){
+    User.find({email: username}, function(err, user){
         if (err) return done(err);
         
-        if (!user) {
+        if (user.length == 0) {
             return done(null, false, req.flash('success', 'No user has been found'));
         }
         
-        user.comparePassword(password, function(res){
+        user[0].comparePassword(password, function(res){
             if (!res) {
                 return done(null, false, req.flash('success', 'Your password is incorrect'));
             }else{
-                return done(null, user);
+                return done(null, user[0]);
             }
         })
     })
 }))
 
 passport.use('creator', new LocalStrategy({usernameField: 'email', passReqToCallback: true,}, function(req, username, password, done){
-    Creator.findOne({email: username}, function(err, creator){
+    Creator.find({email: username}, function(err, creator){
         if (err) return done(err);
         
-        if (!creator) {
+        if (creator.length == 0) {
             return done(null, false, req.flash('success', 'No user has been found'));
         }
         
-        creator.comparePassword(password, function(res){
+        creator[0].comparePassword(password, function(res){
             if (!res) {
                 return done(null, false, req.flash('success', 'Your password is incorrect'));
             }else{
-                return done(null, creator);
+                return done(null, creator[0]);
             }
         })
     })

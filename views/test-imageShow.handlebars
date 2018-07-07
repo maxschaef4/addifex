@@ -1,0 +1,20 @@
+{{#section 'head'}}
+    <link rel="stylesheet" href="../styles/dashboard-products-new_style.css" type="text/css"/>
+    <title>New Product</title>
+    <script src="../scripts/AJAXImage.js"></script>
+{{/section}}
+
+<input type="hidden" id="productId" value="{{id}}">
+
+<h1>THis is for testing image and AJAX</h1>
+
+<div class="button_container col-12">
+    <button class="red col-12" id="testButton">Test</button>
+</div>
+
+<div class="col-12" id="testContainer">
+</div>
+
+{{#each images}}
+    <img src="data:image/png;base64,{{this}}" width="250" height="250"/>
+{{/each}}

@@ -1,0 +1,23 @@
+{{#each order}}
+    <p>Product: {{this.product.name}}</p>
+    <h4>Options</h4>
+    <ul>
+        <li>Color: {{this.product.color}}</li>
+        <li>Size: {{this.product.size}}</li>
+        <li>Option: {{this.product.other}}</li>
+    </ul>
+    <p>Price: {{this.product.price}}</p>
+    <p>Shipping and Handling: {{this.shipping.cost}}</p>
+    <h3>Shipping Info</h3>
+    <h4>To:</h4>
+    <p>{{this.to.line1}}</p>
+    <p>{{this.to.line2}}</p>
+    <p>{{this.to.city}}, {{this.to.state}} {{this.to.zip}}</p>
+    <h4>From:</h4>
+    <p>{{this.from.city}}, {{this.from.state}} {{this.from.zip}}</p>
+    <p>Estimated Time: {{this.shipping.time}}</p>
+    <hr>
+    <p>Sub-Total: {{this.subTotal}}</p>
+    <p>Tax: {{this.tax}}</p>
+    <p>Total: {{this.total}}</p>
+{{/each}}

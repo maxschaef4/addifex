@@ -21,6 +21,7 @@ var UserSchema = new Schema({
         state: {type: String, default: ''},
         zip: {type: String, default: ''}
     },
+    favorites: [Schema.Types.ObjectId],
     account: {
         created: {type: Date, default: Date.now},
         verified: {type: Boolean, default: false},
@@ -46,9 +47,18 @@ UserSchema.pre('save', function(next){
 UserSchema.methods.comparePassword = function(password, done){
     bcrypt.compare(password, this.password, function(err, res){
         if (err) return callback(err, null);
-        console.log(res);
         return done(res)
     })
+}
+
+UserSchema.methods.updateFavs = function(productId, done){
+    for(var i = 0; i < this.favorites.length; i++){
+        if (this.favorites[i].equals(productId)) return done(false);
+    }
+    
+    this.favorites.push(productId);
+    
+    return done(true);
 }
 
 module.exports = mongoose.model('User', UserSchema, 'Users');

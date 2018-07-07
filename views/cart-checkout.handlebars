@@ -1,0 +1,47 @@
+{{#section 'head'}}
+    <link rel="stylesheet" href="../../styles/checkout_style.css" type="text/css"/>
+    <script src="../../scripts/checkout_controller.js"></script>
+    <title>Checkout</title>
+{{/section}}
+<h3>Please review your orders</h3>
+<p>**Please note that orders are a separated per product</p>
+{{#each preOrder}}
+    <p>Product: {{this.product.name}}</p>
+    <h4>Options</h4>
+    <ul>
+        <li>Color: {{this.product.color}}</li>
+        <li>Size: {{this.product.size}}</li>
+        <li>Option: {{this.product.other}}</li>
+    </ul>
+    <p>Price: {{this.product.price}}</p>
+    <p>Shipping and Handling: {{this.shipping.cost}}</p>
+    <h3>Shipping Info</h3>
+    <h4>To:</h4>
+    <p>{{this.to.line1}}</p>
+    <p>{{this.to.line2}}</p>
+    <p>{{this.to.city}}, {{this.to.state}} {{this.to.zip}}</p>
+    <h4>From:</h4>
+    <p>{{this.from.city}}, {{this.from.state}} {{this.from.zip}}</p>
+    <p>Estimated Time: {{this.shipping.time}}</p>
+    <hr>
+    <p>Sub-Total: {{this.subTotal}}</p>
+    <p>Tax: {{this.tax}}</p>
+    <p>Total: {{this.total}}</p>
+{{/each}}
+<form action="" method="post">
+    <h3>Purchase Options</h3>
+    <h4>Card Number</h4>
+    <input class="text_field col-12" type="text" name="cardNumber"/>
+    <h4>Expiration Date</h4>
+    <select class="col-3">
+        <option>Month</option>
+    </select>
+    <select class="col-3">
+        <option>Year</option>
+    </select>
+    <h4>CVC Code</h4>
+    <input class="text_field col-12" type="text" name="cvc"/>
+    <div class="button_container col-12">
+        <button type="submit" class="green col-12">Purchase</button>
+    </div>
+</form>

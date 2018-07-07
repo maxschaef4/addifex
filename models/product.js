@@ -19,7 +19,7 @@ var ProductSchema = new Schema({
     category: String,
     keywords: [String],
     info: {
-        creatorId: Schema.Types.ObjectId,
+        creatorId: {type: Schema.Types.ObjectId, ref: 'Creator'},
         created: {type: Date, default: Date.now},
         updated: {type: Date, default: Date.now},
         verified: {type: Boolean, default: false}

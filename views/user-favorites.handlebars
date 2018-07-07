@@ -1,0 +1,29 @@
+{{#section 'head'}}
+    <link rel="stylesheet" href="../styles/account_style.css" type="text/css"/>
+    <script src="scripts/account_controller.js"></script>
+    <title>Favorited</title>
+{{/section}}
+
+<div class="account_section col-9" id="likesSection">
+    <div class="section_content col-12">
+        {{#each favorites}}
+            <div class="liked_container col-12">
+                <a href="/product/{{this._id}}">
+                    <img class="col-2" src="../images/battery.jpg"/>
+                </a>
+                <div class="likedInfo_container col-10">
+                    <ul>
+                        <li>{{this.name}}</li>
+                        <li>By: {{this.creatorName}}</li>
+                        <li>${{this.price}}</li>
+                    </ul>
+                </div>
+            </div>
+        {{/each}}
+        <div class="button_container col-12">
+            <a href="likes">
+                <button class="red col-12">All Likes</button>
+            </a>
+        </div>
+    </div>
+</div>

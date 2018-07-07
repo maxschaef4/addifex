@@ -2,12 +2,13 @@ const router = require('express').Router();
 const mongoose = require('mongoose');
 const User = require('../models/user');
 const Cart = require('../models/cart');
+const Product = require('../models/product');
 const passport = require('passport');
 const passportConfig = require('../config/passport');
 const async = require('async');
 
 router.get('/signup', function(req, res){
-    res.render('signup', {layout: 'simple.handlebars', message: req.flash('signup')});
+    res.render('user-signup', {layout: 'simple.handlebars', message: req.flash('signup')});
 })
 
 router.post('/signup', function(req, res, next){
@@ -60,7 +61,7 @@ router.post('/signup', function(req, res, next){
 })
 
 router.get('/signin', function(req, res){
-    res.render('signin', {layout: 'simple.handlebars', message: req.flash('success')});
+    res.render('user-signin', {layout: 'simple.handlebars', message: req.flash('success')});
 })
 
 router.post('/signin', passport.authenticate('user', {
@@ -76,7 +77,7 @@ router.get('/account', function(req, res, next){
         User.find({_id: req.user.id}, function(err, user){
             if (err) return next(err);
             
-            res.render('account', {user: user[0]});
+            res.render('user-account', {user: user[0]});
         })
     }
 })
@@ -86,15 +87,25 @@ router.get('/account/notifications', function(req, res){
         return res.redirect('/signin');
     }
     
-    res.render('notifications');
+    res.render('user-notifications');
 })
 
-router.get('/account/favorites', function(req, res){
+router.get('/account/favorites', function(req, res, next){
     if (!req.user) {
         return res.redirect('/signin');
     }
     
-    res.render('favorites');
+    User.find({_id: req.user.id}, function(err, user){
+        if (err) return next(err);
+        
+        ids = user[0].favorites.map(function (obj){ return mongoose.Types.ObjectId(obj)});
+        
+        Product.find({_id: {$in: ids}}, function(err, products){
+            if (err) return next(err);
+            
+            res.render('user-favorites', {favorites: products});
+        })
+    })
 })
 
 router.get('/account/orders', function(req, res){
@@ -102,7 +113,7 @@ router.get('/account/orders', function(req, res){
         return res.redirect('/signin');
     }
     
-    res.render('orders');
+    res.render('user-orders');
 })
 
 router.get('/account/myAccount', function(req, res){
@@ -113,33 +124,8 @@ router.get('/account/myAccount', function(req, res){
     User.find({_id: req.user.id}, function(err, user){
         if (err) return next(err);
         
-        res.render('myAccount', {user: user[0]});
+        res.render('user-myAccount', {user: user[0]});
     })
-})
-
-router.get('/account/myAccount/delete/:id', function(req, res, next){
-    if (!req.user) {
-        return res.redirect('/signin');
-    }
-    
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-        res.status('404').json("Page doesn't exist");
-        return next();
-    }
-    
-    if (req.user.id != req.params.id) {
-        res.status('403').json("Access Denied");
-        return next();
-    }else{
-        
-        User.remove({_id: req.user.id}, function(err, user){
-            if (err) return next(err);
-            
-            //use async.waterfall
-            req.logout();
-            res.redirect('/');
-        })
-    }
 })
 
 router.get('/account/edit', function(req, res){
@@ -148,7 +134,7 @@ router.get('/account/edit', function(req, res){
     }
     
     User.find({_id: req.user.id}, function(err, user){
-        res.render('edit', {layout: 'simple.handlebars', user: user[0], message: req.flash('success')});
+        res.render('user-edit', {layout: 'simple.handlebars', user: user[0], message: req.flash('success')});
     })
 })
 
@@ -161,7 +147,7 @@ router.post('/account/edit', function(req, res, next){
     User.findOne({_id: req.user.id}, function(err, user){
         if (err) return next(err);
         
-        if (!user) {
+        if (user.length == 0) {
             req.flash('success', 'Problem updating your account');
             return next();
         }
@@ -192,9 +178,48 @@ router.get('/account/signout', function(req, res){
         res.redirect('/signin');
     }
     
-    //use async.waterfall
-    req.logout();
-    res.redirect('/');
+    async.waterfall([
+        function (callback) {
+            req.logout();
+            callback(null);
+        },
+        function (callback) {
+            res.redirect('/');
+            callback(null);
+        }
+    ])
+})
+
+router.get('/account/myAccount/delete/:id', function(req, res, next){
+    if (!req.user) {
+        return res.redirect('/signin');
+    }
+    
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        res.status('404').json("Page doesn't exist");
+        return next();
+    }
+    
+    if (req.user.id != req.params.id) {
+        res.status('403').json("Access Denied");
+        return next();
+    }else{
+        User.remove({_id: req.user.id}, function(err, user){
+            if (err) return next(err);
+            Cart.remove({buyer: req.user.id}, function(err, cart){
+                async.waterfall([
+                    function (callback) {
+                        req.logout();
+                        callback(null);
+                    },
+                    function (callback) {
+                        req.session = null;
+                        callback(null, res.redirect('/'));
+                    }
+                ])
+            })
+        })
+    }
 })
 
 module.exports = router;

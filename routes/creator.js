@@ -3,11 +3,11 @@ var Creator = require('../models/creator');
 var passport = require('passport');
 var fs = require('fs');
 
-router.get('/creatorLogin-new', function(req, res){
-    res.render('creatorLogin-new', {layout: 'simple.handlebars', message: req.flash('success')});
+router.get('/dashboard/signup', function(req, res){
+    res.render('creator-signup', {layout: 'simple.handlebars', message: req.flash('success')});
 })
 
-router.post('/creatorLogin-new', function(req, res, next){
+router.post('/dashboard/signup', function(req, res, next){
     var creator = new Creator();
     
     creator.name = req.body.name;
@@ -27,7 +27,7 @@ router.post('/creatorLogin-new', function(req, res, next){
         
         if (existingCreator) {
             req.flash('success', 'Account with that email already exists');
-            return res.redirect('/creatorLogin-new');
+            return res.redirect('/dashboard/signup');
         }else{
             creator.save(function(err, creator){
                 if (err) return next(err);
@@ -47,27 +47,27 @@ router.post('/creatorLogin-new', function(req, res, next){
     })
 })
 
-router.get('/creatorLogin', function(req, res){
+router.get('/dashboard/signin', function(req, res){
     if (!req.user) {
-        res.render('creatorLogin', {layout: 'simple.handlebars', message: req.flash('success')});
+        res.render('dashboard-signin', {layout: 'simple.handlebars', message: req.flash('success')});
     }else{
         if (req.user.type == 'creator') {
-            res.redirect('dashboard');
+            res.redirect('/dashboard');
         }else{
-            res.render('creatorLogin', {layout: 'simple.handlebars', message: req.flash('success')});
+            res.render('dashboard-signin', {layout: 'simple.handlebars', message: req.flash('success')});
         }
     }
 })
 
-router.post('/creatorLogin', passport.authenticate('creator', {
+router.post('/dashboard/signin', passport.authenticate('creator', {
     successRedirect: '/dashboard',
-    failureRedirect: '/creatorLogin',
+    failureRedirect: '/dashboard/signin',
     failureFlash: true
 }))
 
 router.get('/dashboard', function(req, res, next){
-    if (!req.user) {
-        res.redirect('/creatorLogin');
+    if (!req.user || req.user.type != 'creator') {
+        res.redirect('/dashboard/signin');
     }else{
         Creator.findOne({_id: req.user.id}, function(err, creator){
             if (!creator) {
@@ -80,16 +80,37 @@ router.get('/dashboard', function(req, res, next){
     }
 })
 
-router.get('/dashboard-info', function(req, res){
+router.get('/dashboard/account/info', function(req, res){
     res.render('dashboard-info', {layout: 'simple.handlebars'});
 })
 
-router.get('/dashboard-edit', function(req, res){
+router.get('/dashboard/account/edit', function(req, res){
     res.render('dashboard-edit', {layout: 'simple.handlebars'});
 })
 
-router.get('/dashboard-help', function(req, res){
+router.get('/dashboard/help', function(req, res){
     res.render('dashboard-help', {layout: 'simple.handlebars'});
+})
+
+router.get('/dashboard/account/logout', function(req, res, next){
+    if (!req.user || req.user.type != 'creator') {
+        res.redirect('/');
+    }
+    
+    async.waterfall([
+        function (callback) {
+            req.logout();
+            callback(null);
+        },
+        function (callback) {
+            res.redirect('/');
+            callback(null);
+        }
+    ])
+})
+
+router.get('dashboard/account/delete/:id', function(req, res){
+    
 })
 
 module.exports = router;

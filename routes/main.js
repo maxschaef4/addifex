@@ -6,23 +6,23 @@ var passport = require('passport');
 router.get('/', function(req, res, next){
     Product.find({}, function(err, result){
         if (!req.user) {
-            res.render('index', {product: result, user: null});
+            res.render('main-index', {product: result, user: null});
         }else{
             if (req.user.type != 'user') {
-                res.render('index', {product: result, user: null});
+                res.render('main-index', {product: result, user: null});
             }else{
-                res.render('index', {product: result, user: req.user.id, cart: res.locals.cart})
+                res.render('main-index', {product: result, user: req.user.id, cart: res.locals.cart})
             }
         }
     })
 })
 
 router.get('/about', function(req, res){
-    res.render('about');
+    res.render('main-about');
 })
 
 router.get('/contact', function(req, res){
-    res.render('contact');
+    res.render('main-contact');
 })
 
 module.exports = router;

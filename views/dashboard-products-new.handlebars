@@ -1,17 +1,17 @@
 {{#section 'head'}}
-    <link rel="stylesheet" href="styles/dashboard-products-new_style.css" type="text/css"/>
+    <link rel="stylesheet" href="../../styles/dashboard-products-new_style.css" type="text/css"/>
     <title>New Product</title>
-    <script src="../scripts/dashboard-products-new_controller.js"></script>
+    <script src="../../scripts/dashboard-products-new_controller.js"></script>
 {{/section}}
 
 <div class="sideButtons_container col-3">
     <ul>
-        <a href="/dashboard-products">
+        <a href="/dashboard/products">
             <li class="side_button col-12">Back to Products</li>
         </a>
     </ul>
 </div>
-<form action="/dashboard-products-new" method="post" enctype="multipart/form-data" class="rightSection_container col-11">
+<form action="/dashboard/products/new" method="post" enctype="multipart/form-data" class="rightSection_container col-11">
     <center><h3>New Product</h3></center>
     <div class="field_container col-12">
         <h4>Product Name</h4>
@@ -126,9 +126,6 @@
         <input id="keywords" name="keywords" type="hidden" value=""/>
         <ul id="keywordsAdded" class="options_list col-12"></ul>
         <button id="deleteLastKeyword" class="red col-12" type="button">Delete Last</button>
-    </div>
-    <div class="button_container col-12">
-        <button class="green col-12">Save</button>
     </div>
     <div class="button_container col-12">
         <button type="submit" class="blue col-12">Upload</button>
