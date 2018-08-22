@@ -5,9 +5,7 @@
 {{/section}}
 
 <div class="productInfo_container col-9">
-    {{#each images}}
-        <img class="product_image col-7" src="data:image/png;base64,{{this}}"/>
-    {{/each}}
+    <div class="col-7" id="imagesContainer"></div>
     <div class="product_info col-5">
         <ul class="product_info">
             <li class="info" id="name"><strong>{{product.name}}</strong></li>

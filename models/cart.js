@@ -22,7 +22,7 @@ var CartSchema = new Schema({
         color: {type: String, default: null},
         size: {type: String, default: null},
         other: {type: String, default: null},
-        creator: Schema.Types.ObjectId,
+        shop: Schema.Types.ObjectId,
     }],
     info: {
         updated: {type: Date, default: Date.now}
@@ -40,7 +40,6 @@ CartSchema.methods.remove = function(id, done){
     while (this.products.length != 0) {
         //removes last product from product array in cart
         var e = this.products.pop();
-        
         //checks if product id in cart matches the product to be removed
         //if it doesn't match, it is added to the temp array to later be reassigned
         //the product array in cart is reduced to 0 (through popping the last element) in this loop and the product are applied to another array
@@ -57,7 +56,6 @@ CartSchema.methods.remove = function(id, done){
                 this.total = parseFloat((this.total - e.price)).toFixed(2);
                 this.items--;
                 removed = true;
-                console.log("ell");
             }else{
                 temp.push(e);
             }
@@ -66,6 +64,13 @@ CartSchema.methods.remove = function(id, done){
     
     this.products = temp;
     
+    done();
+}
+
+CartSchema.methods.clear = function(done){
+    this.total = 0;
+    this.items = 0;
+    this.products = null;
     done();
 }
 

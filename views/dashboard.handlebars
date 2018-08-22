@@ -1,33 +1,8 @@
 {{#section 'head'}}
     <link rel="stylesheet" href="../styles/dashboard_style.css" type="text/css"/>
-    <title>Dashboard</title>
+    <title>Dashboard Home</title>
 {{/section}}
-
-<div class="sideButtons_container col-3">
-    <ul>
-        <a href="/dashboard">
-            <li class="side_button col-12">Dashboard Home</li>
-        </a>
-        <a href="/dashboard/orders">
-            <li class="side_button col-12">Orders</li>
-        </a>
-        <a href="/dashboard/products">
-            <li class="side_button col-12">Products</li>
-        </a>
-        <a href="/dashboard/sales">
-            <li class="side_button col-12">Sales</li>
-        </a>
-        <a href="/dashboard/account/edit">
-            <li class="side_button col-12">Edit Shop</li>
-        </a>
-        <a href="/dashboard/account/info">
-            <li class="side_button col-12">Shop Info</li>
-        </a>
-        <a href="/dashboard/help">
-            <li class="side_button col-12">Help</li>
-        </a>
-    </ul>
-</div>
+{{> dashboard-sidebar}}
 <div class="rightSection_container col-9">
     <h2>Creator Dashboard</h2>
     <center><h3>Notifications</h3></center>

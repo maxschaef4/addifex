@@ -1,0 +1,30 @@
+ {{#section 'head'}}
+    <link rel="stylesheet" href="../styles/dashboard_style.css" type="text/css"/>
+    <title>My Shop</title>
+{{/section}}
+{{> dashboard-sidebar}}
+<div class="rightSection_container col-9">
+    {{#if shop}}
+        <h3>My Shop Info</h3>
+        <hr>
+        <h4>Shop Name:</h4>
+        <p>{{shop.shopName}}</p>
+        <h4>About My Shop:</h4>
+        <p>{{shop.about}}</p>
+        <h4>Category:</h4>
+        <p>{{shop.category}}</p>
+        <h4>Keywords:</h4>
+        <p>{{shop.keywords}}</p>
+        <h3>Shipping & Billing Info</h3>
+        <h4>Shipping Info</h4>
+        <p>{{shop.shipping.line1}}</p>
+        <p>{{shop.shipping.line2}}</p>
+        <p>{{shop.shipping.city}}, {{shop.shipping.state}} {{shop.shipping.zip}}</p>
+        <h4>Billing Info</h4>
+        <p>{{shop.billing.line1}}</p>
+        <p>{{shop.billing.line2}}</p>
+        <p>{{shop.billing.city}}, {{shop.billing.state}} {{shop.billing.zip}}</p>
+    {{else}}
+        <center><h2>You must have a shop!</h2></center>
+    {{/if}}
+</div>

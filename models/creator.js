@@ -7,23 +7,9 @@ var CreatorSchema = new Schema({
     name: {type: String, default: ''},
     email: {type: String, unique: true, lowercase: true},
     password: String,
-    address: {
-        line1: String,
-        line2: String,
-        city: String,
-        state: String,
-        zip: Number,
-    },
-    shopName: {type: String, unique: true},
     about: String,
-    category: String,
-    keywords: [String],
-    locals: String,
-    products: [Schema.Types.ObjectId],
     account: {
         created: {type: Date, default: Date.now},
-        updated: {type: Date, default: Date.now},
-        verified: {type: Boolean, default: false},
         type: {type: String, default: 'creator'}
     }
 })

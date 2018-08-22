@@ -28,7 +28,7 @@ module.exports = {
             req.session.cart = (!req.session.cart ? {} : req.session.cart);
             
             req.session.cart.total = (!req.session.cart.total ? 0.00 : req.session.cart.total);
-            req.session.cart.items = (!req.session.cart.items ? 0.00 : req.session.cart.items);
+            req.session.cart.items = (!req.session.cart.items ? 0 : req.session.cart.items);
             req.session.cart.products = (!req.session.cart.products ? [] : req.session.cart.products);
         }else{
             delete req.session.cart;

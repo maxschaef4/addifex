@@ -73,6 +73,8 @@ router.post('/signin', passport.authenticate('user', {
 router.get('/account', function(req, res, next){
     if (!req.user) {
         res.redirect('/signin');
+    }else if (req.user.type != 'user') {
+        res.redirect('/signin');
     }else{
         User.find({_id: req.user.id}, function(err, user){
             if (err) return next(err);
@@ -83,17 +85,17 @@ router.get('/account', function(req, res, next){
 })
         
 router.get('/account/notifications', function(req, res){
-    if (!req.user) {
-        return res.redirect('/signin');
-    }
+    if (!req.user) return res.redirect('/signin');
+    
+    if (req.user.type != 'user') return res.redirect('/signin');
     
     res.render('user-notifications');
 })
 
 router.get('/account/favorites', function(req, res, next){
-    if (!req.user) {
-        return res.redirect('/signin');
-    }
+    if (!req.user) return res.redirect('/signin');
+    
+    if (req.user.type != 'user') return res.redirect('/signin');
     
     User.find({_id: req.user.id}, function(err, user){
         if (err) return next(err);
@@ -109,17 +111,17 @@ router.get('/account/favorites', function(req, res, next){
 })
 
 router.get('/account/orders', function(req, res){
-    if (!req.user) {
-        return res.redirect('/signin');
-    }
+    if (!req.user) return res.redirect('/signin');
+    
+    if (req.user.type != 'user') return res.redirect('/signin');
     
     res.render('user-orders');
 })
 
 router.get('/account/myAccount', function(req, res){
-    if (!req.user) {
-        res.redirect('/signin');
-    }
+    if (!req.user) return res.redirect('/signin');
+    
+    if (req.user.type != 'user') return res.redirect('/signin');
     
     User.find({_id: req.user.id}, function(err, user){
         if (err) return next(err);
@@ -129,9 +131,9 @@ router.get('/account/myAccount', function(req, res){
 })
 
 router.get('/account/edit', function(req, res){
-    if (!req.user) {
-        res.redirect('/signin');
-    }
+    if (!req.user) return res.redirect('/signin');
+    
+    if (req.user.type != 'user') return res.redirect('/signin');
     
     User.find({_id: req.user.id}, function(err, user){
         res.render('user-edit', {layout: 'simple.handlebars', user: user[0], message: req.flash('success')});
@@ -140,9 +142,9 @@ router.get('/account/edit', function(req, res){
 
 router.post('/account/edit', function(req, res, next){
     
-    if (!req.user) {
-        res.redirect('/signin');
-    }
+    if (!req.user) return res.redirect('/signin');
+    
+    if (req.user.type != 'user') return res.redirect('/signin');
     
     User.findOne({_id: req.user.id}, function(err, user){
         if (err) return next(err);
@@ -174,9 +176,9 @@ router.post('/account/edit', function(req, res, next){
 })
 
 router.get('/account/signout', function(req, res){
-    if (!req.user) {
-        res.redirect('/signin');
-    }
+    if (!req.user) return res.redirect('/signin');
+    
+    if (req.user.type != 'user') return res.redirect('/signin');
     
     async.waterfall([
         function (callback) {
@@ -191,9 +193,9 @@ router.get('/account/signout', function(req, res){
 })
 
 router.get('/account/myAccount/delete/:id', function(req, res, next){
-    if (!req.user) {
-        return res.redirect('/signin');
-    }
+    if (!req.user) return res.redirect('/signin');
+    
+    if (req.user.type != 'user') return res.redirect('/signin');
     
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         res.status('404').json("Page doesn't exist");

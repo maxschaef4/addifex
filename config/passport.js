@@ -31,12 +31,12 @@ passport.use('user', new LocalStrategy({usernameField: 'email', passReqToCallbac
         if (err) return done(err);
         
         if (user.length == 0) {
-            return done(null, false, req.flash('success', 'No user has been found'));
+            return done(null, false, req.flash('user', 'No user has been found'));
         }
         
         user[0].comparePassword(password, function(res){
             if (!res) {
-                return done(null, false, req.flash('success', 'Your password is incorrect'));
+                return done(null, false, req.flash('user', 'Your password is incorrect'));
             }else{
                 return done(null, user[0]);
             }
@@ -49,12 +49,12 @@ passport.use('creator', new LocalStrategy({usernameField: 'email', passReqToCall
         if (err) return done(err);
         
         if (creator.length == 0) {
-            return done(null, false, req.flash('success', 'No user has been found'));
+            return done(null, false, req.flash('creator', 'No user has been found'));
         }
         
         creator[0].comparePassword(password, function(res){
             if (!res) {
-                return done(null, false, req.flash('success', 'Your password is incorrect'));
+                return done(null, false, req.flash('creator', 'Your password is incorrect'));
             }else{
                 return done(null, creator[0]);
             }

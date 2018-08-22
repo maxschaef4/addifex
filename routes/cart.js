@@ -55,11 +55,19 @@ router.post('/cart', function(req, res, next){
 router.get('/cart/checkout', function(req, res, next){
     //Create a function for building preOrders
     //Since cart comes from the database or the session
+    var noUser = false;
     
-    if (!req.session.guest) {
-        return res.redirect('/guest/signup');
+    if (req.session.guest && !req.session.cart) {
+        req.flash('cart', 'There are no products in your cart');
+        res.redirect('/cart');
     }
     
+    if (!req.session.guest) {
+        noUser = true;
+    }
+    
+    //This is for guest checkout
+    //It gets the preOrder information from req.session.cart.products
     if (!req.user) {
         var preOrder = [];
         var productList = req.session.cart.products;
@@ -115,72 +123,77 @@ router.get('/cart/checkout', function(req, res, next){
         //don't worry about session preOrder already filled
         req.session.preOrder = preOrder;
         
-        return res.render('cart-checkout', {preOrder: preOrder});
-    }
-    
-    Cart.find({'buyer': req.user.id}, function(err, cart){
-        if (err) return next(err);
-        
-        if (cart.length == 0)
-            res.status('500');
-            return next();
-        
-        if (cart[0].products.length === 0) {
-            req.flash('cart', 'You must have items in your cart')
-            
-            return res.redirect('/cart');
-        }
-        
-        //the preOrder array holds objects of mock order objects
-        //no order object is created from Order model
-        //may change that later
-        var preOrder = [];
-        
-        //productList gets the list of products from cart[0]
-        var productList = cart[0].products;
-        
-        //loops through the list of products and pops each product off and converts the info from that product into a new order
-        while (productList != 0) {
-            var orderTemp = {};
-            var tempProd = productList.pop();
-            
-            orderTemp.buyer = req.user.id;
-            orderTemp.creator = tempProd.creator;
-            orderTemp.product = {};
-            orderTemp.product.productId = tempProd.productId;
-            orderTemp.product.name = tempProd.name;
-            orderTemp.product.price = tempProd.price;
-            orderTemp.product.color = (tempProd.color.length == 0 ? 'N/A' : tempProd.color);
-            orderTemp.product.size = (tempProd.size.length == 0 ? 'N/A' : tempProd.size);
-            orderTemp.product.other = (tempProd.other.length == 0 ? 'N/A' : tempProd.other);
-            orderTemp.from = {};
-            orderTemp.from.city = tempProd.shipping.city;
-            orderTemp.from.state = tempProd.shipping.state;
-            orderTemp.from.zip = tempProd.shipping.zip;
-            orderTemp.to = {};
-            orderTemp.to.line1 = req.user.address.line1;
-            orderTemp.to.line2 = req.user.address.line2;
-            orderTemp.to.city = req.user.address.city;
-            orderTemp.to.state = req.user.address.state;
-            orderTemp.to.zip = req.user.address.zip;
-            orderTemp.subTotal = (tempProd.price + tempProd.shipping.cost);
-            orderTemp.shipping = {};
-            orderTemp.shipping.cost = tempProd.shipping.cost;
-            orderTemp.shipping.time = tempProd.shipping.time;
-            orderTemp.shipping.weight = tempProd.shipping.weight;
-            orderTemp.tax = 0.0;
-            orderTemp.total = orderTemp.subTotal * (1 + orderTemp.tax);
-            orderTemp.buildTime = tempProd.buildTime;
-            
-            preOrder.push(orderTemp);
-        }
-        
-        //store preOrder array onto the session
-        //don't worry about session preOrder already filled
-        req.session.preOrder = preOrder;
-        
         res.render('cart-checkout', {preOrder: preOrder});
-    })
+    }else{
+        Cart.find({'buyer': req.user.id}, function(err, cart){
+            if (err) return next(err);
+            
+            if (cart.length == 0){
+                res.status('500');
+                return next();
+            }
+            
+            User.find(req.user.id, function(err, user){
+                if (err) return next(err);
+                
+                if (cart[0].products.length === 0 || !req.session.preOrder) {
+                    req.flash('cart', 'There are no items in your cart');
+                    
+                    res.redirect('/cart');
+                }
+                
+                //the preOrder array holds objects of mock order objects
+                //no order object is created from Order model
+                //may change that later
+                var preOrder = [];
+                
+                //productList gets the list of products from cart[0]
+                var productList = cart[0].products;
+                
+                //loops through the list of products and pops each product off and converts the info from that product into a new order
+                while (productList != 0) {
+                    var orderTemp = {};
+                    var tempProd = productList.pop();
+                    
+                    orderTemp.buyer = req.user.id;
+                    orderTemp.creator = tempProd.creator;
+                    orderTemp.product = {};
+                    orderTemp.product.productId = tempProd.productId;
+                    orderTemp.product.name = tempProd.name;
+                    orderTemp.product.price = tempProd.price;
+                    orderTemp.product.color = (tempProd.color.length == 0 ? 'N/A' : tempProd.color);
+                    orderTemp.product.size = (tempProd.size.length == 0 ? 'N/A' : tempProd.size);
+                    orderTemp.product.other = (tempProd.other.length == 0 ? 'N/A' : tempProd.other);
+                    orderTemp.from = {};
+                    orderTemp.from.city = tempProd.shipping.city;
+                    orderTemp.from.state = tempProd.shipping.state;
+                    orderTemp.from.zip = tempProd.shipping.zip;
+                    orderTemp.to = {};
+                    orderTemp.to.line1 = user[0].shipping.line1;
+                    orderTemp.to.line2 = user[0].shipping.line2;
+                    orderTemp.to.city = user[0].shipping.city;
+                    orderTemp.to.state = user[0].shipping.state;
+                    orderTemp.to.zip = user[0].shipping.zip;
+                    orderTemp.subTotal = (tempProd.price + tempProd.shipping.cost);
+                    orderTemp.shipping = {};
+                    orderTemp.shipping.cost = tempProd.shipping.cost;
+                    orderTemp.shipping.time = tempProd.shipping.time;
+                    orderTemp.shipping.weight = tempProd.shipping.weight;
+                    orderTemp.tax = 0.0;
+                    orderTemp.total = orderTemp.subTotal * (1 + orderTemp.tax);
+                    orderTemp.buildTime = tempProd.buildTime;
+                    
+                    preOrder.push(orderTemp);
+                }
+                
+                //store preOrder array onto the session
+                //don't worry about session preOrder already filled
+                req.session.preOrder = preOrder;
+                
+                res.render('cart-checkout', {preOrder: preOrder, noUser: noUser});
+            })
+        })
+    }
 })
 
 router.post('/cart/checkout', function(req, res, next){
@@ -189,54 +202,64 @@ router.post('/cart/checkout', function(req, res, next){
     if (!req.session.preOrder) return res.redirect('/cart');
     
     if (!req.user) {
-        guestId = new ObjectId();
+        res.redirect('/cart/unsigned');
     }
-    
-    async.each(req.session.preOrder, function(preOrder, callback){
-        var order = new Order();
-        
-        order.buyer = (guestId ? guestId : req.user.id);
-        order.creator.id = preOrder.creator;
-        order.creator.name = null;
-        order.product.productId = preOrder.product.productId;
-        order.product.name = preOrder.product.name;
-        order.product.price = preOrder.product.price;
-        order.product.size = preOrder.product.size;
-        order.product.color = preOrder.product.color;
-        order.product.other = preOrder.product.other;
-        order.from.city = preOrder.from.city;
-        order.from.state = preOrder.from.state;
-        order.from.zip = preOrder.from.zip;
-        order.to.line1 = preOrder.to.line1;
-        order.to.line2 = preOrder.to.line2;
-        order.to.city = preOrder.to.city;
-        order.to.state = preOrder.to.state;
-        order.to.zip = preOrder.to.zip;
-        order.subtotal = preOrder.subTotal;
-        order.shipping.cost = preOrder.shipping.cost;
-        order.shipping.time = preOrder.shipping.time;
-        order.shipping.weight = preOrder.shipping.weight;
-        order.tax = preOrder.tax;
-        order.total = preOrder.total;
-        order.buildTime = preOrder.buildTime;
-        
-        order.save(function(err){
+    Cart.find({'buyer': req.user.id}, function(err, cart){
+        async.each(req.session.preOrder, function(preOrder, callback){
+            var order = new Order();
+            
+            order.buyer = (guestId ? guestId : req.user.id);
+            order.creator.id = preOrder.creator;
+            order.creator.name = null;
+            order.product.productId = preOrder.product.productId;
+            order.product.name = preOrder.product.name;
+            order.product.price = preOrder.product.price;
+            order.product.size = preOrder.product.size;
+            order.product.color = preOrder.product.color;
+            order.product.other = preOrder.product.other;
+            order.from.city = preOrder.from.city;
+            order.from.state = preOrder.from.state;
+            order.from.zip = preOrder.from.zip;
+            order.to.line1 = preOrder.to.line1;
+            order.to.line2 = preOrder.to.line2;
+            order.to.city = preOrder.to.city;
+            order.to.state = preOrder.to.state;
+            order.to.zip = preOrder.to.zip;
+            order.subtotal = preOrder.subTotal;
+            order.shipping.cost = preOrder.shipping.cost;
+            order.shipping.time = preOrder.shipping.time;
+            order.shipping.weight = preOrder.shipping.weight;
+            order.tax = preOrder.tax;
+            order.total = preOrder.total;
+            order.buildTime = preOrder.buildTime;
+            
+            order.save(function(err){
+                if (err) return next(err);
+                
+                order = null;
+                
+                callback();
+            })
+        }, function(err){
             if (err) return next(err);
             
-            callback();
+            if (!req.user) req.session.cart = null;
+            req.session.preOrder = null;
+            cart[0].clear(function(done){
+                cart[0].save(function(err){
+                    if (req.user) {
+                        res.redirect('/order/postview');
+                    }else{
+                        res.redirect('/guest/view-order/' + guestId)
+                    }
+                })
+            })
         })
-    }, function(err){
-        if (err) return next(err);
-        
-        if (!req.user) req.session.cart = null;
-        req.session.preOrder = null;
-        
-        if (req.user) {
-            res.redirect('/order/postview');
-        }else{
-            res.redirect('/guest/view-order/' + guestId)
-        }
     })
+})
+
+router.get('/cart/unsigned', function(req, res){
+    res.render('cart-no-user', {layout: 'simple.handebars'});
 })
 
 module.exports = router;

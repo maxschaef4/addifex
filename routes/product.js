@@ -1,6 +1,7 @@
 var router = require('express').Router();
 var mongoose = require('mongoose');
 var Creator = require('../models/creator');
+var Shop = require('../models/shop');
 var Product = require('../models/product');
 var Cart = require('../models/cart');
 var User = require('../models/user');
@@ -28,109 +29,111 @@ router.get('/product/:id', function(req, res, next){
             })
         },
         function(product, callback) {
-            Creator.find({'_id': product.info.creatorId}, function(err, creator){
+            Creator.find({'_id': product.info.shopId}, function(err, shop){
                 if (err) return next(err);
                 
-                if (creator.length == 0) {
-                    res.status('500');
-                    return next();
-                }
-                
-                var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/' + creator[0]._id + '/' + req.params.id;
-                
-                fs.readdir(path, function(err, files){
-                    if (err) return next(err);
-                    
-                    data = [];
-                    
-                    async.each(files, function(file, callback){
-                        
-                        let loc = path + '/' + file;
-                        
-                        fs.readFile(loc, function(err, img){
-                            if (err) return next(err);
-                            
-                            data.push(img.toString('base64'));
-                            callback();
-                        })
-                    }, function(err){
-                        if (err) return next(err);
-                        
-                        return res.render("product-main", {product: product, images: data, cartMessage: req.flash('product'), favMessage: req.flash('favorite'), creator: creator[0]})
-                    })
-                })
+                return res.render("product-main", {product: product, cartMessage: req.flash('product'), favMessage: req.flash('favorite'), shop: shop[0]})
             })
         }
     ])
 })
 
 router.post('/product/:id', function(req, res, next){
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+        res.status('404');
+        return next();
+    }
     
-    Product.find({_id: req.body.productId}, function(err, product){
-        if (err) return next(err);
-        
-        //runs for non-users
-        if (!req.user) {
-            var cart = {};
-            cart.productId = req.body.productId;
-            cart.name = product[0].name;
-            cart.price = parseFloat(product[0].price);
-            cart.shipping = {};
-            cart.shipping.cost = product[0].shipping.cost;
-            cart.shipping.time = product[0].shipping.time;
-            cart.shipping.weight = product[0].shipping.weight;
-            cart.color = req.body.color;
-            cart.size = req.body.size;
-            cart.other = req.body.other;
-            cart.creator = product[0].info.creatorId;
-            
-            req.session.cart.total = (parseFloat(req.session.cart.total) + parseFloat(product[0].price)).toFixed(2);
-            req.session.cart.items++;
-            req.session.cart.products.push(cart);
-            
-            req.flash('product', "Product Added to Cart");
-            return res.redirect('/product/' + req.params.id);
+    Product.find({_id: req.params.id}, function(err, product){
+        if (err){
+            res.status('500');
+            return next(err);
+        }else if (product.length == 0) {
+            res.status('404');
+            return next();
         }
         
-        Cart.find({buyer: req.user.id}, function(err, cart){
-            if (err) return next(err);
-            
-            if (!cart[0]) {
-                return res.redirect('/product/' + req.params.id);
-            }
-            
-            cart[0].products.push({
-                productId: req.body.productId,
-                name: product[0].name,
-                price: parseFloat(product[0].price),
-                shipping: {
-                    cost: product[0].shipping.cost,
-                    time: product[0].shipping.time,
-                    weight: product[0].shipping.weight
-                },
-                color: req.body.color,
-                size: req.body.size,
-                other: req.body.other,
-                creator: product[0].info.creatorId
-            })
-            
-            cart[0].total = (parseFloat(cart[0].total) + parseFloat(product[0].price)).toFixed(2);
-            cart[0].items++;
-            
-            cart[0].save(function(err){
-                if (err) return next(err);
+        Shop.find(product[0].info.shopId, function(err, shop){
+            //runs for guest checkout
+            if (!req.user || req.user.type == 'creator') {
+                var cart = {};
+                cart.productId = req.body.productId;
+                cart.name = product[0].name;
+                cart.price = parseFloat(product[0].price);
+                cart.shipping = {};
+                cart.shipping.cost = product[0].shipping.cost;
+                cart.shipping.time = product[0].shipping.time;
+                cart.shipping.weight = product[0].shipping.weight;
+                cart.shipping.city = shop[0].shipping.city;
+                cart.shipping.state = shop[0].shipping.state;
+                cart.shipping.zip = shop[0].shipping.zip;
+                cart.color = req.body.color;
+                cart.size = req.body.size;
+                cart.other = req.body.other;
+                cart.creator = product[0].info.creatorId;
+                
+                req.session.cart.total = parseFloat((parseFloat(req.session.cart.total) + parseFloat(product[0].price)).toFixed(2));
+                req.session.cart.items++;
+                
+                req.session.cart.products.push(cart);
                 
                 req.flash('product', "Product Added to Cart");
                 return res.redirect('/product/' + req.params.id);
-            })
+            }else{
+                Cart.find({buyer: req.user.id}, function(err, cart){
+                    if (err) return next(err);
+                    
+                    if (!cart[0]) {
+                        return res.redirect('/product/' + req.params.id);
+                    }
+                    
+                    var productToAdd = {
+                        productId: req.body.productId,
+                        name: product[0].name,
+                        price: parseFloat(product[0].price),
+                        shipping: {
+                            cost: product[0].shipping.cost,
+                            time: product[0].shipping.time,
+                            weight: product[0].shipping.weight,
+                            city: shop[0].shipping.city,
+                            state: shop[0].shipping.state,
+                            zip: shop[0].shipping.zip,
+                        },
+                        color: req.body.color,
+                        size: req.body.size,
+                        other: req.body.other,
+                        creator: product[0].info.shopId
+                    }
+                    
+                    cart[0].products.push(productToAdd);
+                    
+                    cart[0].total = parseFloat((parseFloat(cart[0].total) + parseFloat(product[0].price)).toFixed(2));
+                    cart[0].items++;
+                    
+                    cart[0].save(function(err){
+                        if (err) return next(err);
+                        
+                        req.flash('product', "Product Added to Cart");
+                        return res.redirect('/product/' + req.params.id);
+                    })
+                })
+            }
         })
     })
 })
 
 router.get('/product/:id/favorite', function(req, res, next){
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) return next(res.status('404').json("Page doesn't exist"));
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)){
+        res.status('404');
+        return next();
+    }
     
-    if (!req.user || req.user.type == 'creator'){
+    if (!req.user){
+        req.flash('favorite', "Sign In to Favorite");
+        return res.redirect('/product/' + req.params.id);
+    }
+    
+    if (req.user.type == 'creator') {
         req.flash('favorite', "Sign In to Favorite");
         return res.redirect('/product/' + req.params.id);
     }
@@ -155,32 +158,36 @@ router.get('/product/:id/favorite', function(req, res, next){
 })
 
 router.get('/shop/:name', function(req, res){
-    Creator.find({'shopName': req.params.name}, function(err, creator){
+    Shop.find({'shopName': req.params.name}, function(err, shop){
         if (err) return next(err);
-            
-        if (!creator[0]) {
-            res.status('404').json("Page doesn't exist");
+        
+        if (!shop[0]) {
+            res.status('404');
             return next();
         }
         
-        Product.find({'creatorId': creator[0]._id}, function(err, products){
+        Creator.find(shop[0].creatorId, function(err, creator){
             if (err) return next(err);
             
-            res.render('shop-main', {product: products, creator: creator[0]});
+            Product.find({'info.shopId': shop[0]._id}, function(err, products){
+                if (err) return next(err);
+                
+                res.render('shop-main', {product: products, shop: shop[0], creator: creator[0]});
+            })
         })
     })
 })
 
 router.get('/dashboard/products', function(req, res, next){
-    Product.find({"info.creatorId": req.user.id}, function(err, products){
+    Product.find({"info.shopId": req.user.id}, function(err, products){
         if (err) return next(err);
         
-        res.render('dashboard-products', {layout: 'simple.handlebars', message: req.flash('creator'), product: products});
+        res.render('dashboard-products', {layout: 'simple.handlebars', message: req.flash('shop'), product: products});
     })
 })
 
 router.get('/dashboard/products/new', function(req, res){
-    res.render('dashboard-products-new', {layout: 'simple.handlebars', message: req.flash('creator')});
+    res.render('dashboard-products-new', {layout: 'simple.handlebars', message: req.flash('shop')});
 })
 
 router.post('/dashboard/products/new', function(req, res, next){
@@ -189,16 +196,17 @@ router.post('/dashboard/products/new', function(req, res, next){
     
     var form = new formidable.IncomingForm();
     form.multiple = true;
-    var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/' + req.user.id + '/' + product._id;
+    var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/' + product._id;
     
-    Creator.find({_id: req.user.id}, function(err, creator){
+    Shop.find({creatorId: req.user.id}, function(err, shop){
         if (err) return next(err);
         
-        if (!creator[0]) {
+        if (!shop[0]) {
             req.flash('creator', 'Product failed to be uploaded');
             res.redirect('/dashboard/products/new');
             next();
         }
+        
         async.waterfall([
             function(callback) {
                 fs.mkdir(path, function(err){
@@ -223,25 +231,32 @@ router.post('/dashboard/products/new', function(req, res, next){
                     product.options.others = fields.others.split(',');
                     product.category = fields.category;
                     product.keywords = fields.keywords.split(',');
-                    product.info.creatorId = req.user.id;
+                    product.info.shopId = shop[0]._id;
+                    
+                    //var datetime = new Date();
+                    //
+                    //for(var i = 0; i < files.length; i++){
+                    //    
+                    //    files[i].name = datetime + '_' + i;
+                    //}
                     
                     callback(null);
                 })
             },
             function(callback) {
-                creator[0].products.push(product._id);
+                shop[0].products.push(product._id);
                 
                 //updates the creators date to upload time
                 //creator.account.updated = new Date();
                 
-                creator[0].save(function(err){
+                shop[0].save(function(err){
                     if (err) return next(err);
-                })
-                
-                product.save(function(err){
-                    if (err) return next(err);
-                    req.flash('creator', 'Product added successfully');
-                    callback(res.redirect('/dashboard/products'));
+                    
+                    product.save(function(err){
+                        if (err) return next(err);
+                        req.flash('creator', 'Product added successfully');
+                        callback(res.redirect('/dashboard/products'));
+                    })
                 })
             }
         ])
@@ -264,11 +279,14 @@ router.get('/dashboard/products/view/:id', function(req, res, next){
         
         if (!req.user) return res.redirect('/dashboard/signin');
         
-        if (req.user.type == 'user')
+        if (req.user.type == 'user'){
             res.status('403');
             return next();
+        }
         
-        if (product[0].info.creatorId.equals(req.user.id)) {
+        if (product[0].info.shopId.equals(req.user.id)) {
+            console.log(product[0].info.shopId);
+            console.log(req.user.id);
             res.render('dashboard-products-view', {layout: 'simple.handlebars', product: product[0], message: req.flash('success')});
         }else{
             res.status('403').json("You do not have permission");
@@ -288,7 +306,7 @@ router.post('/dashboard/products/view/:id', function(req, res, next){
     Product.remove({'_id': req.params.id}, function(err, product){
         if (err) return next(err);
         
-        Creator.find({'_id': req.user.id}, function(err, creator){
+        Shop.find({'creatorId': req.user.id}, function(err, creator){
             if (err) return next(err);
             
             if (!creator) {
@@ -308,6 +326,8 @@ router.post('/dashboard/products/view/:id', function(req, res, next){
             
             creator[0].products = temp;
             
+            temp = null;
+            
             creator[0].save(function(err, creator){
                 req.flash('creator', "Product successfully deleted");
                 res.redirect('/dashboard/products');
@@ -319,9 +339,10 @@ router.post('/dashboard/products/view/:id', function(req, res, next){
 router.get('/dashboard/products/edit/:id', function(req, res){
     if (!req.user) return res.redirect('/dashboard/signin');
     
-    if (req.user.type == 'user')
+    if (req.user.type == 'user'){
         res.status('403');
         return next();
+    }
     
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
         res.status('404');
@@ -358,7 +379,6 @@ router.post('/dashboard/products/edit/:id', function(req, res, next){
     }
     
     Product.find({'_id': req.params.id}, function(err, product){
-        
         if (req.body.name) product[0].name = req.body.name;
         if (req.body.price) product[0].price = req.body.price;
         if (req.body.shipCost) product[0].shipping.cost = req.body.shipCost;

@@ -1,10 +1,11 @@
 var router = require('express').Router();
 var Creator = require('../models/creator');
+var Shop = require('../models/shop');
 var passport = require('passport');
 var fs = require('fs');
 
 router.get('/dashboard/signup', function(req, res){
-    res.render('creator-signup', {layout: 'simple.handlebars', message: req.flash('success')});
+    res.render('dashboard-signup', {layout: 'simple.handlebars', message: req.flash('creator')});
 })
 
 router.post('/dashboard/signup', function(req, res, next){
@@ -13,34 +14,29 @@ router.post('/dashboard/signup', function(req, res, next){
     creator.name = req.body.name;
     creator.email = req.body.email;
     creator.password = req.body.password;
-    creator.address.line1 = req.body.line1;
-    creator.address.line2 = req.body.line2;
-    creator.address.city = req.body.city;
-    creator.address.state = req.body.state;
-    creator.address.zip = req.body.zip;
-    creator.shopName = req.body.shopName;
     creator.about = req.body.about;
-    creator.category = req.body.category;
     
     Creator.findOne({email: req.body.email}, function(err, existingCreator){
         if (err) return next(err);
         
         if (existingCreator) {
-            req.flash('success', 'Account with that email already exists');
+            req.flash('creator', 'Account with that email already exists');
             return res.redirect('/dashboard/signup');
         }else{
             creator.save(function(err, creator){
                 if (err) return next(err);
                 
-                var path = __dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/' + creator._id;
-                
-                fs.mkdir(path, function(err){
+                req.logIn(creator, function(err){
                     if (err) return next(err);
                     
-                    req.logIn(creator, function(err){
-                        if (err) return next(err);
+                    //checks which button was pressed
+                    //1 == continue to shop signup
+                    //2 == skip to dashboard
+                    if (req.body.button == 1) {
+                        res.redirect('/dashboard/open-shop');
+                    }else{
                         res.redirect('/dashboard');
-                    })
+                    }
                 })
             })
         }
@@ -49,12 +45,12 @@ router.post('/dashboard/signup', function(req, res, next){
 
 router.get('/dashboard/signin', function(req, res){
     if (!req.user) {
-        res.render('dashboard-signin', {layout: 'simple.handlebars', message: req.flash('success')});
+        res.render('dashboard-signin', {layout: 'simple.handlebars', message: req.flash('creator')});
     }else{
         if (req.user.type == 'creator') {
             res.redirect('/dashboard');
         }else{
-            res.render('dashboard-signin', {layout: 'simple.handlebars', message: req.flash('success')});
+            res.render('dashboard-signin', {layout: 'simple.handlebars', message: req.flash('creator')});
         }
     }
 })
@@ -71,7 +67,8 @@ router.get('/dashboard', function(req, res, next){
     }else{
         Creator.findOne({_id: req.user.id}, function(err, creator){
             if (!creator) {
-                res.status('403').json("You do not have permission");
+                req.flash
+                res.redirect('/dashboard/signin');
                 return next();
             }else{
                 res.render('dashboard', {layout: 'simple.handlebars', creator: creator});

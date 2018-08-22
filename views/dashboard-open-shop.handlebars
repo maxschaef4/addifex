@@ -1,0 +1,216 @@
+{{#section 'head'}}
+    <link rel="stylesheet" href="../styles/creatorLogin_style.css" type="text/css"/>
+    <title>Open Shop</title>
+{{/section}}
+
+<form id="newShop" class="col-12" action="/dashboard/open-shop" method="post">
+    <center><h2>Shipping Information</h2></center>
+    <div class="field_container col-12">
+        <h4>Address Line 1</h4>
+        <p id="addressError" class="error"></p>
+        <input id="address" name="shippingLine1" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>Address Line 2</h4>
+        <p id="addressError" class="error"></p>
+        <input id="address" name="shippingLine2" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>City</h4>
+        <p id="cityError" class="error"></p>
+        <input id="city" name="shippingCity" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>State</h4>
+        <p id="stateError" class="error"></p>
+        <select id="state" name="shippingState" class="col-3">
+            <option>Select State</option>
+                <option>Alabama</option>
+                <option>Alaska</option>
+                <option>Arizona</option>
+                <option>Arkansas</option>
+                <option>California</option>
+                <option>Colorado</option>
+                <option>Connecticut</option>
+                <option>Delaware</option>
+                <option>District Of Columbia</option>
+                <option>Florida</option>
+                <option>Georgia</option>
+                <option>Hawaii</option>
+                <option>Idaho</option>
+                <option>Illinois</option>
+                <option>Indiana</option>
+                <option>Iowa</option>
+                <option>Kansas</option>
+                <option>Kentucky</option>
+                <option>Louisiana</option>
+                <option>Maine</option>
+                <option>Maryland</option>
+                <option>Massachusetts</option>
+                <option>Michigan</option>
+                <option >Minnesota</option>
+                <option>Mississippi</option>
+                <option>Missouri</option>
+                <option>Montana</option>
+                <option>Nebraska</option>
+                <option value="NV">Nevada</option>
+                <option value="NH">New Hampshire</option>
+                <option value="NJ">New Jersey</option>
+                <option value="NM">New Mexico</option>
+                <option value="NY">New York</option>
+                <option value="NC">North Carolina</option>
+                <option value="ND">North Dakota</option>
+                <option value="OH">Ohio</option>
+                <option value="OK">Oklahoma</option>
+                <option value="OR">Oregon</option>
+                <option value="PA">Pennsylvania</option>
+                <option value="RI">Rhode Island</option>
+                <option value="SC">South Carolina</option>
+                <option value="SD">South Dakota</option>
+                <option value="TN">Tennessee</option>
+                <option value="TX">Texas</option>
+                <option value="UT">Utah</option>
+                <option value="VT">Vermont</option>
+                <option>Virginia</option>
+                <option>Washington</option>
+                <option>West Virginia</option>
+                <option>Wisconsin</option>
+                <option>Wyoming</option>
+        </select>
+    </div>
+    <div class="field_container col-12">
+        <h4>Zipcode</h4>
+        <p id="zipcodeError" class="error"></p>
+        <input id="zipcode" name="shippingZip" class="text_field col-12" type="text" size="50"/>
+    </div>
+    <center><h2>Billing Information</h2></center>
+    <div class="field_container col-12">
+        <input type="checkbox" name="same"/>
+        <label for="same">My Shipping Info and Billing Info are the Same</label>
+    </div>
+    <div class="hidden-panel col-12">
+        <div class="field_container col-12">
+            <h4>Address Line 1</h4>
+            <p id="addressError" class="error"></p>
+            <input id="address" name="billingLine1" class="text_field col-12" type="text" size="50"/>
+        </div>
+        <div class="field_container col-12">
+            <h4>Address Line 2</h4>
+            <p id="addressError" class="error"></p>
+            <input id="address" name="billingLine2" class="text_field col-12" type="text" size="50"/>
+        </div>
+        <div class="field_container col-12">
+            <h4>City</h4>
+            <p id="cityError" class="error"></p>
+            <input id="city" name="billingCity" class="text_field col-12" type="text" size="50"/>
+        </div>
+        <div class="field_container col-12">
+            <h4>State</h4>
+            <p id="stateError" class="error"></p>
+            <select name="billingState" class="col-2">
+                <option>Select State</option>
+                <option>Alabama</option>
+                <option>Alaska</option>
+                <option>Arizona</option>
+                <option>Arkansas</option>
+                <option>California</option>
+                <option>Colorado</option>
+                <option>Connecticut</option>
+                <option>Delaware</option>
+                <option>District Of Columbia</option>
+                <option>Florida</option>
+                <option>Georgia</option>
+                <option>Hawaii</option>
+                <option>Idaho</option>
+                <option>Illinois</option>
+                <option>Indiana</option>
+                <option>Iowa</option>
+                <option>Kansas</option>
+                <option>Kentucky</option>
+                <option>Louisiana</option>
+                <option>Maine</option>
+                <option>Maryland</option>
+                <option>Massachusetts</option>
+                <option>Michigan</option>
+                <option >Minnesota</option>
+                <option>Mississippi</option>
+                <option>Missouri</option>
+                <option>Montana</option>
+                <option>Nebraska</option>
+                <option value="NV">Nevada</option>
+                <option value="NH">New Hampshire</option>
+                <option value="NJ">New Jersey</option>
+                <option value="NM">New Mexico</option>
+                <option value="NY">New York</option>
+                <option value="NC">North Carolina</option>
+                <option value="ND">North Dakota</option>
+                <option value="OH">Ohio</option>
+                <option value="OK">Oklahoma</option>
+                <option value="OR">Oregon</option>
+                <option value="PA">Pennsylvania</option>
+                <option value="RI">Rhode Island</option>
+                <option value="SC">South Carolina</option>
+                <option>South Dakota</option>
+                <option>Tennessee</option>
+                <option>Texas</option>
+                <option>Utah</option>
+                <option>Vermont</option>
+                <option>Virginia</option>
+                <option>Washington</option>
+                <option>West Virginia</option>
+                <option>Wisconsin</option>
+                <option>Wyoming</option>
+            </select>
+        </div>
+        <div class="field_container col-12">
+            <h4>Zipcode</h4>
+            <p id="zipcodeError" class="error"></p>
+            <input id="zipcode" name="billingZip" class="text_field col-12" type="text" size="50"/>
+        </div>
+    </div>
+    <center><h2>Shop Information</h2></center>
+    <div class="field_container col-12">
+        <h4>Shop Name</h4>
+        <p>*This will also be used as your Creator Name and your shop and products will be referenced by this name</p>
+        <p id="shopNameError" class="error"></p>
+        <input id="shopName" name="shopName" class="text_field col-12" type="text"/>
+    </div>
+    <div class="field_container col-12">
+        <h4>About Shop</h4>
+        <p>*This describes who you and your shop are. You can include personal and shop history, the products you make, your mission statement, etc.</p>
+        <p id="descriptionError" class="error"></p>
+        <textarea name="about" class="col-12"></textarea>
+    </div>
+    <div class="field_container col-12">
+        <h4>Shop Image</h4>
+        <p>*This will be displayed on your shop page. The image can be your logo, a picture of you, etc.</p>
+        <p>**Image size must be less than 1 MB and the image dimensions must be 1:1 and greater than 100px by 100px.</p>
+        <p id="shopImageError" class="error"></p>
+        <input id="shopImage" name="shopImage" class="file_input" type="file"/>
+        <label for="shopImage" id="imageLabel" class="col-3">Choose a file...</label>
+    </div>
+    <div class="field_container col-12">
+        <h4>Shop Category</h4>
+        <p id="shopCategoryError" class="error"></p>
+        <select id="shopCategory" name="category" class="col-3">
+            <option>Select a Category</option>
+            <option>Art</option>
+            <option>Consumer Products</option>
+            <option>Electronics</option>
+            <option>Furniture</option>
+            <option>Metalworks</option>
+            <option>Other</option>
+            <option>Miscellaneous</option>
+        </select>
+    </div>
+    <div class="field_container col-12">
+        <h4>Shop Keywords</h4>
+        <p>*Keywords are used to help people search for your shop. You can add up to 10 keywords.</p>
+        <p id="keywordsError" class="error"></p>
+        <input id="keywords" name="keywords" class="text_field col-4" type="text"/>
+        <button id="addKeyword" type="button" class="addKeyword_button green col-1">+</button>
+    </div>
+    <div class="button_container col-12">
+        <button class="blue col-12" type="submit" id="signup">Open Shop</button>
+    </div>
+</form>

@@ -3,9 +3,11 @@
 var router = require('express').Router();
 var async = require('async');
 var fs = require('fs');
+const { Readable, Writable } = require('stream');
 var formidable = require('formidable');
 var Creator = require('../models/creator');
 var Product = require('../models/product');
+var multi = require('multistream');
 
 router.get('/image-upload', function(req, res, next){
     if (!req.user) {
@@ -67,14 +69,14 @@ router.get('/test/imageTest/:id', function(req, res, next){
     fs.readdir(path, function(err, files){
         if (err) return next(err);
         
-        var newStream = fs.createReadStream(path + '/' + files[0]);
-        //var newStream = fs.createReadStream(__dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/read.txt')
-        var write = fs.createWriteStream(__dirname.substring(0, __dirname.indexOf('/routes')) + '/tmp/write.txt');
+        var streams = [];
         
-        newStream.setEncoding('hex');
+        for(var i = 0; i < files.length; i++){
+            streams.push(fs.createReadStream(path +'/' + files[i], {encoding: 'hex'}));
+        }
         
-        newStream.pipe(res);
-    })
+        multi(streams).pipe(res);
+    }) 
 })
 
 module.exports = router;
